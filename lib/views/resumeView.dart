@@ -105,7 +105,9 @@ class _ResumeViewState extends State<ResumeView> {
                             style: ButtonStyle(
                               //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                             ),
-                            onPressed: () { },
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/lecture');
+                            },
                             child: Text('Lire'),
                           ),
                         ],

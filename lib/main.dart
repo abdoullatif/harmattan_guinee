@@ -1,4 +1,5 @@
 import 'package:Harmattan_guinee/controller/bibliothequeController.dart';
+import 'package:Harmattan_guinee/controller/lectureController.dart';
 import 'package:Harmattan_guinee/controller/resumeController.dart';
 import 'package:Harmattan_guinee/controller/themeController.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/themes': (context) => const ThemeController(),
         '/biblioteque': (context) => const BibliothequeController(),
         '/resume': (context) => const ResumeController(),
+        '/lecture': (context) => const LectureController(),
       },
     );
   }
