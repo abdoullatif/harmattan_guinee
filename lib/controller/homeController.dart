@@ -13,6 +13,15 @@ class HomeController extends StatelessWidget {
 
     return Scaffold(
       body: HomeView(nombre),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          //print('exit');
+          Navigator.pop(context);
+        },
+        tooltip: 'Quitter',
+        backgroundColor: Colors.red,
+        child: Icon(Icons.exit_to_app),
+      ),
     );
   }
 }

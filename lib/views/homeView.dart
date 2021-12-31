@@ -45,7 +45,7 @@ class _HomeViewState extends State<HomeView> {
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/themes');
+                        Navigator.pushNamed(context, '/themes', arguments: 'Tous les livres');
                       },
                       child: Image.asset("assets/home/all_livre.png"),
                     ),
@@ -67,7 +67,8 @@ class _HomeViewState extends State<HomeView> {
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/livreAudio');
+                        //Navigator.pushNamed(context, '/livreAudio');
+                        Navigator.pushNamed(context, '/themes', arguments: 'Livres audio');
                       },
                       child: Image.asset("assets/home/livre_audio.png"),
                     ),

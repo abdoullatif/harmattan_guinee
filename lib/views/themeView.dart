@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class ThemeView extends StatefulWidget {
@@ -12,6 +13,8 @@ class ThemeView extends StatefulWidget {
 class _ThemeViewState extends State<ThemeView> {
   @override
   Widget build(BuildContext context) {
+    //argument
+    final type = ModalRoute.of(context).settings.arguments;
     //form
     final formGlobalKey = GlobalKey<FormState>();
 
@@ -23,6 +26,15 @@ class _ThemeViewState extends State<ThemeView> {
             key: formGlobalKey,
             child: Column(
               children: [
+                Text(
+                    'Thématique ($type)',
+                    style: TextStyle(
+                        color: Colors.grey[800],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 40,
+                    ),
+                ),
+                SizedBox(height: 30,),
                 SizedBox(
                   //height: ,
                   width: 500,

@@ -1,6 +1,7 @@
 import 'package:Harmattan_guinee/controller/bibliothequeController.dart';
 import 'package:Harmattan_guinee/controller/lectureController.dart';
 import 'package:Harmattan_guinee/controller/resumeController.dart';
+import 'package:Harmattan_guinee/controller/slidehomeController.dart';
 import 'package:Harmattan_guinee/controller/themeController.dart';
 import 'package:flutter/material.dart';
 import 'controller/homeController.dart';
@@ -20,9 +21,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Harmattan guinee app'),
-      //initialRoute: '/',
+      //home: MyHomePage(title: 'Harmattan guinee app'),
+      initialRoute: '/',
       routes: {
+        '/': (context) => const SliderhomeController(),
         '/home': (context) => const HomeController(),
         '/themes': (context) => const ThemeController(),
         '/biblioteque': (context) => const BibliothequeController(),
@@ -33,6 +35,11 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+
+
+
+/*
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -46,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return HomeController();
+    return SliderhomeController();
   }
 }
+*/

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class ResumeView extends StatefulWidget {
@@ -13,7 +14,7 @@ class _ResumeViewState extends State<ResumeView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 100,right: 100),
+      padding: EdgeInsets.only(left: 30,right: 30),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -24,10 +25,22 @@ class _ResumeViewState extends State<ResumeView> {
                   child: Image.asset("assets/images/9782343212760b.jpg"),
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: MediaQuery.of(context).size.width / 1.8,
                   child: Column(
                     children: [
-                      Text('Une jeunesse a l\'ombre'),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          'Une jeunesse a l\'ombre',
+                          textAlign: TextAlign.start,
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(
+                            color: Colors.grey[800],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 30,),
                       DefaultTabController(
                         length: 2,
@@ -85,30 +98,48 @@ class _ResumeViewState extends State<ResumeView> {
                       SizedBox(height: 30,),
                       Row(
                         children: [
-                          ElevatedButton(
+                          ElevatedButton.icon(
                             style: ButtonStyle(
                               //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                             ),
-                            onPressed: () { },
-                            child: Text('Acheter'),
+                            onPressed: () {
+                              _showDialogBuy(context);
+                            },
+                            icon: Icon(Icons.shopping_cart, size: 18),
+                            label: Text('Acheter'),
                           ),
                           SizedBox(width: 20,),
-                          ElevatedButton(
+                          ElevatedButton.icon(
                             style: ButtonStyle(
                               //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                             ),
-                            onPressed: () { },
-                            child: Text('Recevoir un extraire'),
+                            onPressed: () {
+                              _showDialogReceive(context);
+                            },
+                            icon: Icon(Icons.send, size: 18),
+                            label: Text('Recevoir un extraire'),
                           ),
                           SizedBox(width: 20,),
-                          ElevatedButton(
+                          ElevatedButton.icon(
                             style: ButtonStyle(
                               //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                             ),
                             onPressed: () {
                               Navigator.pushNamed(context, '/lecture');
                             },
-                            child: Text('Lire'),
+                            icon: Icon(Icons.book_rounded, size: 18),
+                            label: Text('Lire un extraire'),
+                          ),
+                          SizedBox(width: 20,),
+                          ElevatedButton.icon(
+                            style: ButtonStyle(
+                              //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                            ),
+                            onPressed: () {
+                              //Navigator.pushNamed(context, '/lecture');
+                            },
+                            icon: Icon(Icons.audiotrack, size: 18),
+                            label: Text('Ecouter un extraire'),
                           ),
                         ],
                       ),
@@ -131,4 +162,107 @@ class _ResumeViewState extends State<ResumeView> {
       ),
     );
   }
+
+  //AlerteDialog Achat
+  _showDialogBuy(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          child: AlertDialog(
+            title: Text('Acheter'),
+            content: Container(
+              width: 700,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text('Entrer votre numero de telephone'),
+                    SizedBox(
+                      //height: ,
+                      //width: 500,
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                          icon: const Icon(Icons.phone_android),
+                          hintText: 'Numero de telephone',
+                          labelText: 'Numero de telephone',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Suivant', style: TextStyle(color: Colors.black),),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Annuler', style: TextStyle(color: Colors.black),),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  //AlerteDialog Recevoir un extraire
+  _showDialogReceive(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          child: AlertDialog(
+            title: Text('Recevoir un extraire'),
+            content: Container(
+              width: 700,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text('Entrer votre numero addresse email'),
+                    SizedBox(
+                      //height: ,
+                      //width: 500,
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                          icon: const Icon(Icons.email),
+                          hintText: 'email',
+                          labelText: 'email',
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Recevoir', style: TextStyle(color: Colors.black),),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Annuler', style: TextStyle(color: Colors.black),),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+
 }

@@ -2,28 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 
-class LandingView extends StatelessWidget {
+class LandingView extends StatefulWidget {
   const LandingView({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: LandingViewContent(),
-    );
-  }
+  _LandingViewState createState() => _LandingViewState();
 }
 
-
-class LandingViewContent extends StatefulWidget {
-  const LandingViewContent({Key key}) : super(key: key);
-
-  @override
-  _LandingViewContentState createState() => _LandingViewContentState();
-}
-
-class _LandingViewContentState extends State<LandingViewContent> {
+class _LandingViewState extends State<LandingView> {
   @override
   Widget build(BuildContext context) {
     return Container();
   }
 }
+
