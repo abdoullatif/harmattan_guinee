@@ -1,13 +1,48 @@
+import 'dart:io';
+
 import 'package:Harmattan_guinee/controller/bibliothequeController.dart';
 import 'package:Harmattan_guinee/controller/lectureController.dart';
 import 'package:Harmattan_guinee/controller/resumeController.dart';
 import 'package:Harmattan_guinee/controller/slidehomeController.dart';
 import 'package:Harmattan_guinee/controller/themeController.dart';
+import 'package:Harmattan_guinee/synchro/synchro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'controller/homeController.dart';
+import 'databases/sqflite_db.dart';
 
-void main() {
-  runApp(MyApp());
+//globale var
+var synchronisation;
+
+//bad certificate correction
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //bad certificat
+  HttpOverrides.global = new MyHttpOverrides();
+  //Init db
+  await DB.init();
+  //DB local parametre
+  List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
+  if(tab.isNotEmpty){
+    //send data for init synchronisation
+    synchronisation = Synchro("/data/user/0/com.tulipind.bmapp/databasesbmdb",
+        "/storage/emulated/0/Android/data/com.tulipind.bmapp/files/Pictures/"
+        ,"uploads/",tab[0]['user'],tab[0]['mdp'],tab[0]['dbname'],tab[0]['ip_server'],tab[0]['adresse_server']);
+    //synchronisation.synchronize();
+  }
+  //Orientation
+  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]).then((_){
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
