@@ -25,7 +25,6 @@ class MyHttpOverrides extends HttpOverrides{
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-
   //bad certificat
   HttpOverrides.global = new MyHttpOverrides();
   //Init db
@@ -34,12 +33,12 @@ void main() async{
   List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
   if(tab.isNotEmpty){
     //send data for init synchronisation
-    synchronisation = Synchro("/data/user/0/com.tulipind.bmapp/databasesbmdb",
-        "/storage/emulated/0/Android/data/com.tulipind.bmapp/files/Pictures/"
+    synchronisation = Synchro("/data/user/0/com.tulipindustries.Harmattan_guinee/databasesharmattan",
+        "/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/"
         ,"uploads/",tab[0]['user'],tab[0]['mdp'],tab[0]['dbname'],tab[0]['ip_server'],tab[0]['adresse_server']);
     //synchronisation.synchronize();
   }
-  //Orientation
+  //Orientation paysage
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]).then((_){
     runApp(MyApp());
   });

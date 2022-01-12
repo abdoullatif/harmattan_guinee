@@ -11,7 +11,7 @@ class DB{
   static Future<void> init() async{
     if (_db != null) return;
     try{
-      String _path = await getDatabasesPath() + 'harmattan_db';
+      String _path = await getDatabasesPath() + 'harmattan';
       print("succes");
       print(_path);
       _db = (await openDatabase(_path, version: _version, onCreate: onCreate)) as Database;
@@ -97,7 +97,13 @@ class DB{
   //Query
   static Future<List<Map<String, dynamic>>> query() async => await _db.rawQuery('SELECT  FROM  WHERE ');
 
+  //insert
+  static Future<int> insert(String table, Map<String, dynamic> model) async => await _db.insert(table, model);
+
+  //update
+  //static Future<int> update(String table, Map<String, dynamic> model,int id) async => await _db.update(table, model, where: 'id = ?', whereArgs: [id]);
+
   //Query Select All
-  static Future<List<Map<String, dynamic>>> querySelect(String table) async => await _db.rawQuery('SELECT * FROM  WHERE ');
+  static Future<List<Map<String, dynamic>>> querySelect(String table) async => await _db.rawQuery('SELECT * FROM $table');
 
 }
