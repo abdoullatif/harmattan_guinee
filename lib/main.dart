@@ -37,7 +37,7 @@ void main() async{
         ,"uploads/",tab[0]['user'],tab[0]['mdp'],tab[0]['dbname'],tab[0]['ip_server'],tab[0]['adresse_server']);
     //synchronisation.synchronize();
   }
-  //Orientation paysage
+  //Orientation Paysage
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]).then((_){
     runApp(MyApp());
   });

@@ -12,6 +12,9 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+
+
+
   @override
   Widget build(BuildContext context) {
     // init
@@ -115,6 +118,10 @@ class _HomeViewState extends State<HomeView> {
       builder: (BuildContext context) {
         //variable
         final _formKey = GlobalKey<FormState>();
+        //
+        TextEditingController _email = TextEditingController();
+        TextEditingController _password = TextEditingController();
+        //
         return Container(
           child: AlertDialog(
             title: Text('Panneaux de configuration'),
@@ -130,6 +137,7 @@ class _HomeViewState extends State<HomeView> {
                         //height: ,
                         //width: 500,
                         child: TextFormField(
+                          controller: _email,
                           decoration: const InputDecoration(
                             icon: const Icon(Icons.email),
                             hintText: 'Email',
@@ -149,6 +157,8 @@ class _HomeViewState extends State<HomeView> {
                         //height: ,
                         //width: 500,
                         child: TextFormField(
+                          controller: _password,
+                          obscureText: true,
                           decoration: const InputDecoration(
                             icon: const Icon(Icons.vpn_key_sharp),
                             hintText: 'Password',
@@ -175,8 +185,32 @@ class _HomeViewState extends State<HomeView> {
 
                   //validate
                   if (_formKey.currentState.validate()) {
-                    Navigator.of(context).pop();
-                    _showDialogParameter(context);
+                    if(_email.text == "admin" && _password.text == "aze"){
+                      Navigator.of(context).pop();
+                      _showDialogParameter(context);
+                      //toast
+                      Fluttertoast.showToast(
+                          msg: "Connecte", //Présence enregistrée,
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 2,
+                          backgroundColor: Colors.green,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                    } else {
+                      //toast
+                      Fluttertoast.showToast(
+                          msg: "Erreur de loggin !", //Présence enregistrée,
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 5,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                    }
+
                   }
 
                 },
@@ -195,289 +229,292 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  //
   StateSetter _setState;
 
   //Alerte parameter
   _showDialogParameter(BuildContext context) {
+
     //variable
     final _formKey = GlobalKey<FormState>();
     //textbox
-    TextEditingController _locate = TextEditingController();
+    //TextEditingController _locate = TextEditingController();
     TextEditingController _device = TextEditingController();
     TextEditingController _adresse_server = TextEditingController();
     TextEditingController _ip_server = TextEditingController();
-    TextEditingController _site_pdaig = TextEditingController();
+    //TextEditingController _site_pdaig = TextEditingController();
     TextEditingController _user = TextEditingController();
     TextEditingController _mdp = TextEditingController();
     TextEditingController _dbname = TextEditingController();
     //-------------------------------------------------------------------------------------
+    getParam() async {
+      List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
+      if(tab.isNotEmpty){
+        _setState(() {
+          _device = TextEditingController(text: tab[0]['device']);
+          _adresse_server = TextEditingController(text: tab[0]['adresse_server']);
+          _dbname = TextEditingController(text: tab[0]['dbname']);
+          _ip_server = TextEditingController(text: tab[0]['ip_server']);
+          //_site_harmattan = TextEditingController(text: tab[0]['site_harmattan']);
+          _user = TextEditingController(text: tab[0]['user']);
+          _mdp = TextEditingController(text: tab[0]['mdp']);
+        });
+      }
+    }
+    getParam();
+    //-------------------------------------------------------------------------------------
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          child: AlertDialog(
-            title: Text('Panneaux de configuration'),
-            content: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState){
-                  _setState = setState;
-
-                  return Container(
-                    width: 700,
-                    child: Form(
-                      key: _formKey,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 50.0, right: 50.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Container(
-                                //color: Colors.indigo,
-                                  margin: EdgeInsets.only(bottom: 30.0),
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: SizedBox(
-                                      height: 30.0,
-                                      child: Text("Parametre", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),),
-                                    ),
-                                  )
+        return AlertDialog(
+          title: Text('Panneaux de configuration'),
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState){
+                //
+                _setState = setState;
+                return Container(
+                  width: 700,
+                  child: Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 50.0, right: 50.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Container(
+                              //color: Colors.indigo,
+                                margin: EdgeInsets.only(bottom: 30.0),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: SizedBox(
+                                    height: 30.0,
+                                    child: Text("Parametre", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),),
+                                  ),
+                                )
+                            ),
+                            TextFormField(
+                              obscureText: false,
+                              controller: _device,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.tablet, color: Colors.blue),
+                                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                hintText: "Identifiant de la tablette",
+                                //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
                               ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  print(value);
+                                  return 'Veuiller entrer le nom de la tablette';
+                                }
+                                return null;
+                              },
+                            ),
+                            //SizedBox(height: 25.0),
+                            SizedBox(height: 25.0),
+                            TextFormField(
+                              obscureText: false,
+                              controller: _adresse_server,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.vpn_lock, color: Colors.blue),
+                                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                hintText: "Adresse DNS du server",
+                                //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Veuiller entrer l\'Adresse DNS du server';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 25.0),
+                            TextFormField(
+                              obscureText: false,
+                              controller: _dbname,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.vpn_lock, color: Colors.blue),
+                                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                hintText: "Nom de la base de donnee",
+                                //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Veuiller entrer l\'Adresse DNS du server';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 25.0),
+                            TextFormField(
+                              obscureText: false,
+                              controller: _ip_server,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.settings, color: Colors.blue),
+                                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                hintText: "Adresse ip du server",
+                                //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Veuiller entrer l\'Adresse ip du server';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 25.0),
+                            /*
                               TextFormField(
                                 obscureText: false,
-                                controller: _device,
+                                controller: _site_pdaig,
                                 decoration: InputDecoration(
-                                  icon: Icon(Icons.tablet, color: Colors.blue),
+                                  icon: Icon(Icons.web, color: Colors.blue),
                                   contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                  hintText: "Identifiant de la tablette",
+                                  hintText: "Site web officiel de l'harmattan",
                                   //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
                                 ),
                                 validator: (value) {
                                   if (value.isEmpty) {
-                                    print(value);
-                                    return 'Veuiller entrer le nom de la tablette';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              //SizedBox(height: 25.0),
-                              SizedBox(height: 25.0),
-                              TextFormField(
-                                obscureText: false,
-                                controller: _adresse_server,
-                                decoration: InputDecoration(
-                                  icon: Icon(Icons.vpn_lock, color: Colors.blue),
-                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                  hintText: "Adresse DNS du server",
-                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Veuiller entrer l\'Adresse DNS du server';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: 25.0),
-                              TextFormField(
-                                obscureText: false,
-                                controller: _dbname,
-                                decoration: InputDecoration(
-                                  icon: Icon(Icons.vpn_lock, color: Colors.blue),
-                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                  hintText: "Nom de la base de donnee",
-                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Veuiller entrer l\'Adresse DNS du server';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: 25.0),
-                              TextFormField(
-                                obscureText: false,
-                                controller: _ip_server,
-                                decoration: InputDecoration(
-                                  icon: Icon(Icons.settings, color: Colors.blue),
-                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                  hintText: "Adresse ip du server",
-                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Veuiller entrer l\'Adresse ip du server';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: 25.0),
-                              /*
-                        TextFormField(
-                          obscureText: false,
-                          controller: _site_pdaig,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.web, color: Colors.blue),
-                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Site web officiel de l'harmattan",
-                            //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Veuiller le site officiel de l\'harmattan';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 25.0),
-                         */
-                              TextFormField(
-                                obscureText: false,
-                                controller: _user,
-                                decoration: InputDecoration(
-                                  icon: Icon(Icons.edit, color: Colors.blue),
-                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                  hintText: "Nom utlilisateur server",
-                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Veuiller entrer le Nom utlilisateur server';
+                                    return 'Veuiller le site officiel de l\'harmattan';
                                   }
                                   return null;
                                 },
                               ),
                               SizedBox(height: 25.0),
-                              TextFormField(
-                                obscureText: false,
-                                controller: _mdp,
-                                decoration: InputDecoration(
-                                  icon: Icon(Icons.security, color: Colors.blue),
-                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                  hintText: "Mot de passe Utilisateur-server",
-                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Veuiller entrer le Mot de passe Utilisateur-server';
-                                  }
-                                  return null;
-                                },
+                               */
+                            TextFormField(
+                              obscureText: false,
+                              controller: _user,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.edit, color: Colors.blue),
+                                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                hintText: "Nom utlilisateur server",
+                                //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
                               ),
-                              SizedBox(height: 25.0),
-                            ],
-                          ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Veuiller entrer le Nom utlilisateur server';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 25.0),
+                            TextFormField(
+                              obscureText: false,
+                              controller: _mdp,
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.security, color: Colors.blue),
+                                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                hintText: "Mot de passe Utilisateur-server",
+                                //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Veuiller entrer le Mot de passe Utilisateur-server';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 25.0),
+                          ],
                         ),
                       ),
                     ),
-                  );
+                  ),
+                );
+              }
+          ),
+
+          actions: [
+            ElevatedButton.icon(
+              //minWidth: MediaQuery.of(context).size.width,
+              //padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+              onPressed: () async{
+                if (_formKey.currentState.validate()) {
+                  //Verification
+                  List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
+                  if(tab.isNotEmpty){
+                    //On modifie les informations present
+                    await DB.update("parametre", {
+                      "device": _device.text,
+                      //"locate": "",
+                      "dbname": _dbname.text,
+                      "mdp": _mdp.text,
+                      "adresse_server": _adresse_server.text,
+                      "ip_server": _ip_server.text,
+                      //"site_harmattan": _site_pdaig.text,
+                      "user": _user.text,
+                    },tab[0]['id']);
+
+                    //toast
+                    Fluttertoast.showToast(
+                        msg: "Modification effectuer avec succes !", //Présence enregistrée,
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 5,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+
+                  } else {
+                    // insertion du nom de la tablette
+                    await DB.insert("parametre", {
+                      "device": _device.text,
+                      //"locate": "",
+                      "adresse_server": _adresse_server.text,
+                      "dbname": _dbname.text,
+                      "ip_server": _ip_server.text,
+                      //"site_harmattan": _site_pdaig.text,
+                      "user": _user.text,
+                      "mdp": _mdp.text,
+                    });
+
+                    //toast
+                    Fluttertoast.showToast(
+                        msg: "Enregistrement effectuer avec succes !", //Présence enregistrée,
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 5,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+
+                  }
                 }
+              },
+              icon: Icon(Icons.save, size: 18),
+              label: Text("Enregistrer", textAlign: TextAlign.center,),
             ),
-
-            actions: [
-              Material(
-                elevation: 1.0,
-                borderRadius: BorderRadius.circular(10.0),
-                color: Color(0xff01A0C7),
-                child: MaterialButton(
-                  //minWidth: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  onPressed: () async{
-                    if (_formKey.currentState.validate()) {
-                      //Verification
-                      List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
-                      if(tab.isNotEmpty){
-                        //On modifie les informations present
-                        await DB.update("parametre", {
-                          "device": _device.text,
-                          //"locate": "",
-                          "dbname": _dbname.text,
-                          "mdp": _mdp.text,
-                          "adresse_server": _adresse_server.text,
-                          "ip_server": _ip_server.text,
-                          //"site_harmattan": _site_pdaig.text,
-                          "user": _user.text,
-                        },tab[0]['id']);
-
-                        //toast
-                        Fluttertoast.showToast(
-                            msg: "Modification effectuer avec succes !", //Présence enregistrée,
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 5,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 16.0
-                        );
-
-                      } else {
-                        // insertion du nom de la tablette
-                        await DB.insert("parametre", {
-                          "device": _device.text,
-                          //"locate": "",
-                          "adresse_server": _adresse_server.text,
-                          "dbname": _dbname.text,
-                          "ip_server": _ip_server.text,
-                          //"site_harmattan": _site_pdaig.text,
-                          "user": _user.text,
-                          "mdp": _mdp.text,
-                        });
-
-                        //toast
-                        Fluttertoast.showToast(
-                            msg: "Enregistrement effectuer avec succes !", //Présence enregistrée,
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 5,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 16.0
-                        );
-
-                      }
-                    }
-                  },
-                  child: Text("Enregistrer", textAlign: TextAlign.center,),
-                ),
-              ),
-              Material(
-                elevation: 1.0,
-                borderRadius: BorderRadius.circular(10.0),
-                color: Color(0xff01A0C7),
-                child: MaterialButton(
-                  //minWidth: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  onPressed: () async{
-                    List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
-                    if(tab.isNotEmpty){
-                      setState(() {
-                        _device = TextEditingController(text: tab[0]['device']);
-                        _adresse_server = TextEditingController(text: tab[0]['adresse_server']);
-                        _dbname = TextEditingController(text: tab[0]['dbname']);
-                        _ip_server = TextEditingController(text: tab[0]['ip_server']);
-                        //_site_harmattan = TextEditingController(text: tab[0]['site_harmattan']);
-                        _user = TextEditingController(text: tab[0]['user']);
-                        _mdp = TextEditingController(text: tab[0]['mdp']);
-                      });
-                    }
-                  },
-                  child: Text("Reset", textAlign: TextAlign.center,),
-                ),
-              ),
-              /*
+            ElevatedButton.icon(
+              onPressed: () async{
+                _setState(() {
+                  _device = TextEditingController(text: '');
+                  _adresse_server = TextEditingController(text: '');
+                  _dbname = TextEditingController(text: '');
+                  _ip_server = TextEditingController(text: '');
+                  //_site_harmattan = TextEditingController(text: '');
+                  _user = TextEditingController(text: '');
+                  _mdp = TextEditingController(text: '');
+                });
+              },
+              icon: Icon(Icons.clear, size: 18),
+              label: Text("Reset", textAlign: TextAlign.center,),
+            ),
+            /*
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
                 child: Text('Enregistrer', style: TextStyle(color: Colors.black),),
               ),*/
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Quitter', style: TextStyle(color: Colors.black),),
-              ),
-            ],
-          ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Quitter', style: TextStyle(color: Colors.black),),
+            ),
+          ],
         );
       },
     );

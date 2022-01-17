@@ -193,7 +193,6 @@ class Synchro {
         }
 
         print("-------------------End Theme Table-------------------------------");
-
         print("-------------------livre Table-------------------------------");
 
         try {
@@ -208,19 +207,19 @@ class Synchro {
               var id = row['id'];
 
               int exiting = Sqflite.firstIntValue(await db.rawQuery(
-                  'SELECT COUNT(*) FROM personne  where id_personne=?',
+                  'SELECT COUNT(*) FROM livre where id=?',
                   [id]));
 
               if (exiting != 0) {
                 //update
-                List<Map> personne_update = await db.rawQuery(
+                List<Map> livre_update = await db.rawQuery(
                     'SELECT * FROM livre where id=?',
                     [id]);
                 var livre_update_time;
-                if (personne_update.length == 0)
+                if (livre_update.length == 0)
                   livre_update_time = "";
                 else
-                  livre_update_time = personne_update.first['flagtransmis'];
+                  livre_update_time = livre_update.first['flagtransmis'];
                 if(livre_update_time.toString().compareTo("")!=0) {
                   if ((livre_update_time)
                       .toString()
