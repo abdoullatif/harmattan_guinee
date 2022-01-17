@@ -113,48 +113,72 @@ class _HomeViewState extends State<HomeView> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        //variable
+        final _formKey = GlobalKey<FormState>();
         return Container(
           child: AlertDialog(
             title: Text('Panneaux de configuration'),
             content: Container(
               width: 700,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Text('Login'),
-                    SizedBox(
-                      //height: ,
-                      //width: 500,
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          icon: const Icon(Icons.email),
-                          hintText: 'Email',
-                          labelText: 'Email',
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text('Login'),
+                      SizedBox(
+                        //height: ,
+                        //width: 500,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            icon: const Icon(Icons.email),
+                            hintText: 'Email',
+                            labelText: 'Email',
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              print(value);
+                              return 'Veuiller entrer l\'email ';
+                            }
+                            return null;
+                          },
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10,),
-                    SizedBox(
-                      //height: ,
-                      //width: 500,
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          icon: const Icon(Icons.vpn_key_sharp),
-                          hintText: 'Password',
-                          labelText: 'Password',
+                      SizedBox(height: 10,),
+                      SizedBox(
+                        //height: ,
+                        //width: 500,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            icon: const Icon(Icons.vpn_key_sharp),
+                            hintText: 'Password',
+                            labelText: 'Password',
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              print(value);
+                              return 'Veuiller entrer le mot de passe';
+                            }
+                            return null;
+                          },
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10,),
-                  ],
+                      SizedBox(height: 10,),
+                    ],
+                  ),
                 ),
               ),
             ),
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  _showDialogParameter(context);
+
+                  //validate
+                  if (_formKey.currentState.validate()) {
+                    Navigator.of(context).pop();
+                    _showDialogParameter(context);
+                  }
+
                 },
                 child: Text('Suivant', style: TextStyle(color: Colors.black),),
               ),
@@ -170,6 +194,8 @@ class _HomeViewState extends State<HomeView> {
       },
     );
   }
+
+  StateSetter _setState;
 
   //Alerte parameter
   _showDialogParameter(BuildContext context) {
@@ -191,97 +217,101 @@ class _HomeViewState extends State<HomeView> {
         return Container(
           child: AlertDialog(
             title: Text('Panneaux de configuration'),
-            content: Container(
-              width: 700,
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 50.0, right: 50.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          //color: Colors.indigo,
-                            margin: EdgeInsets.only(bottom: 30.0),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                height: 30.0,
-                                child: Text("Parametre", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),),
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState){
+                  _setState = setState;
+
+                  return Container(
+                    width: 700,
+                    child: Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 50.0, right: 50.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Container(
+                                //color: Colors.indigo,
+                                  margin: EdgeInsets.only(bottom: 30.0),
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: SizedBox(
+                                      height: 30.0,
+                                      child: Text("Parametre", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),),
+                                    ),
+                                  )
                               ),
-                            )
-                        ),
-                        TextFormField(
-                          obscureText: false,
-                          controller: _device,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.tablet, color: Colors.blue),
-                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Identifiant de la tablette",
-                            //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              print(value);
-                              return 'Veuiller entrer le nom de la tablette';
-                            }
-                            return null;
-                          },
-                        ),
-                        //SizedBox(height: 25.0),
-                        SizedBox(height: 25.0),
-                        TextFormField(
-                          obscureText: false,
-                          controller: _adresse_server,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.vpn_lock, color: Colors.blue),
-                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Adresse DNS du server",
-                            //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Veuiller entrer l\'Adresse DNS du server';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 25.0),
-                        TextFormField(
-                          obscureText: false,
-                          controller: _dbname,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.vpn_lock, color: Colors.blue),
-                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Nom de la base de donnee",
-                            //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Veuiller entrer l\'Adresse DNS du server';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 25.0),
-                        TextFormField(
-                          obscureText: false,
-                          controller: _ip_server,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.settings, color: Colors.blue),
-                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Adresse ip du server",
-                            //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Veuiller entrer l\'Adresse ip du server';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 25.0),
-                        /*
+                              TextFormField(
+                                obscureText: false,
+                                controller: _device,
+                                decoration: InputDecoration(
+                                  icon: Icon(Icons.tablet, color: Colors.blue),
+                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                  hintText: "Identifiant de la tablette",
+                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    print(value);
+                                    return 'Veuiller entrer le nom de la tablette';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              //SizedBox(height: 25.0),
+                              SizedBox(height: 25.0),
+                              TextFormField(
+                                obscureText: false,
+                                controller: _adresse_server,
+                                decoration: InputDecoration(
+                                  icon: Icon(Icons.vpn_lock, color: Colors.blue),
+                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                  hintText: "Adresse DNS du server",
+                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Veuiller entrer l\'Adresse DNS du server';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 25.0),
+                              TextFormField(
+                                obscureText: false,
+                                controller: _dbname,
+                                decoration: InputDecoration(
+                                  icon: Icon(Icons.vpn_lock, color: Colors.blue),
+                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                  hintText: "Nom de la base de donnee",
+                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Veuiller entrer l\'Adresse DNS du server';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 25.0),
+                              TextFormField(
+                                obscureText: false,
+                                controller: _ip_server,
+                                decoration: InputDecoration(
+                                  icon: Icon(Icons.settings, color: Colors.blue),
+                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                  hintText: "Adresse ip du server",
+                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Veuiller entrer l\'Adresse ip du server';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 25.0),
+                              /*
                         TextFormField(
                           obscureText: false,
                           controller: _site_pdaig,
@@ -300,46 +330,49 @@ class _HomeViewState extends State<HomeView> {
                         ),
                         SizedBox(height: 25.0),
                          */
-                        TextFormField(
-                          obscureText: false,
-                          controller: _user,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.edit, color: Colors.blue),
-                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Nom utlilisateur server",
-                            //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                              TextFormField(
+                                obscureText: false,
+                                controller: _user,
+                                decoration: InputDecoration(
+                                  icon: Icon(Icons.edit, color: Colors.blue),
+                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                  hintText: "Nom utlilisateur server",
+                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Veuiller entrer le Nom utlilisateur server';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 25.0),
+                              TextFormField(
+                                obscureText: false,
+                                controller: _mdp,
+                                decoration: InputDecoration(
+                                  icon: Icon(Icons.security, color: Colors.blue),
+                                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                  hintText: "Mot de passe Utilisateur-server",
+                                  //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Veuiller entrer le Mot de passe Utilisateur-server';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 25.0),
+                            ],
                           ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Veuiller entrer le Nom utlilisateur server';
-                            }
-                            return null;
-                          },
                         ),
-                        SizedBox(height: 25.0),
-                        TextFormField(
-                          obscureText: false,
-                          controller: _mdp,
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.security, color: Colors.blue),
-                            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            hintText: "Mot de passe Utilisateur-server",
-                            //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Veuiller entrer le Mot de passe Utilisateur-server';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 25.0),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
+                  );
+                }
             ),
+
             actions: [
               Material(
                 elevation: 1.0,
@@ -349,7 +382,7 @@ class _HomeViewState extends State<HomeView> {
                   //minWidth: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                   onPressed: () async{
-                    if (true) {
+                    if (_formKey.currentState.validate()) {
                       //Verification
                       List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
                       if(tab.isNotEmpty){
@@ -417,12 +450,11 @@ class _HomeViewState extends State<HomeView> {
                     List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
                     if(tab.isNotEmpty){
                       setState(() {
-                        _locate = TextEditingController(text: tab[0]['locate']);
                         _device = TextEditingController(text: tab[0]['device']);
                         _adresse_server = TextEditingController(text: tab[0]['adresse_server']);
                         _dbname = TextEditingController(text: tab[0]['dbname']);
                         _ip_server = TextEditingController(text: tab[0]['ip_server']);
-                        _site_pdaig = TextEditingController(text: tab[0]['site_pdaig']);
+                        //_site_harmattan = TextEditingController(text: tab[0]['site_harmattan']);
                         _user = TextEditingController(text: tab[0]['user']);
                         _mdp = TextEditingController(text: tab[0]['mdp']);
                       });

@@ -87,7 +87,7 @@ class Synchro {
           counting = 0;
           for (var row in get_users_rows) {
             try{
-              // print("new" + row['flagtransmis']);
+              //
               var id = row['id'];
               int exiting = Sqflite.firstIntValue(await db.rawQuery(
                   'SELECT COUNT(*) FROM users  where id=?',

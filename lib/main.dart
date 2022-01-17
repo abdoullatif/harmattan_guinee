@@ -1,11 +1,10 @@
 import 'dart:io';
-
 import 'package:Harmattan_guinee/controller/bibliothequeController.dart';
 import 'package:Harmattan_guinee/controller/lectureController.dart';
 import 'package:Harmattan_guinee/controller/resumeController.dart';
 import 'package:Harmattan_guinee/controller/slidehomeController.dart';
 import 'package:Harmattan_guinee/controller/themeController.dart';
-import 'package:Harmattan_guinee/synchro/synchro.dart';
+import 'package:Harmattan_guinee/synchro/synchro_by_sooba_inspire_by_alimou_washington.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'controller/homeController.dart';
