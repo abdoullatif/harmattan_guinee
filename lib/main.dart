@@ -35,7 +35,7 @@ void main() async{
     synchronisation = Synchro("/data/user/0/com.tulipindustries.Harmattan_guinee/databasesharmattan",
         "/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/"
         ,"uploads/",tab[0]['user'],tab[0]['mdp'],tab[0]['dbname'],tab[0]['ip_server'],tab[0]['adresse_server']);
-    //synchronisation.synchronize();
+    synchronisation.synchronize();
   }
   //Orientation Paysage
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]).then((_){

@@ -71,21 +71,23 @@ class Synchro {
         //Connection to online database
         conn = await MySqlConnection.connect(ConnectionSettings(
             host: this.online_ip,
-            port: 3407,
+            port: 3306, //3407
             user: this.user,
             password: this.password,
             db: this.db_name_online));
 
         print("==========================Server to local start=============================================");
 
-        print("-------------------Users Table-------------------------------");
-
+        //print("-------------------Users Table-------------------------------");
+        /*
         try{
 
           var get_users_rows = await conn.query(
               'SELECT * FROM  users ', []);
+
           counting = 0;
           for (var row in get_users_rows) {
+            print(row);
             try{
               //
               var id = row['id'];
@@ -95,7 +97,7 @@ class Synchro {
               if (exiting == 0)  {
                 //insert
                 await db.rawQuery(
-                    'INSERT INTO `users` (`id`, `nom`, `prenom`, `email`, `password`, `role`, `avatar`,) VALUES (?,?,?,?,?,?,?)',
+                    'INSERT INTO `users` (`id`, `nom`, `prenom`, `email`, `password`, `role`, `avatar`) VALUES (?,?,?,?,?,?,?)',
                     [
                       row['id'],
                       row['nom'],
@@ -118,12 +120,12 @@ class Synchro {
         } catch (e) {
           print("error from  users table " + e.toString());
         }
-        print("-------------------End Users Table-------------------------------");
+        */
 
-        print("-------------------Theme Table-------------------------------");
+        print("-------------------User Table-------------------------------");
 
         try {
-          //theme
+          //users
           var counting = 0;
 
           var get_users_rows =
@@ -137,16 +139,16 @@ class Synchro {
             try {
               var id = row['id'];
               int exiting = Sqflite.firstIntValue(await db.rawQuery(
-                  'SELECT COUNT(*) FROM users  where id=?', [id]));
+                  'SELECT COUNT(*) FROM users where id=?', [id]));
               if (exiting != 0) {
                 //update
-                List<Map> localite_update = await db.rawQuery(
+                List<Map> user_update = await db.rawQuery(
                     'SELECT * FROM users where id=?', [id]);
                 var users_update_time;
-                if (localite_update.length == 0)
+                if (user_update.length == 0)
                   users_update_time = "";
                 else
-                  users_update_time = localite_update.first['flagtransmis'];
+                  users_update_time = user_update.first['flagtransmis'];
                 if ((users_update_time).toString().compareTo(
                     row['flagtransmis']) <
                     0) {
@@ -177,7 +179,8 @@ class Synchro {
                       row['password'],
                       row['role'],
                       row['avatar'],
-                      row['flagtransmis']
+                      row['flagtrans'
+                          'mis']
                     ]);
                 counting++;
               }
@@ -186,19 +189,21 @@ class Synchro {
             }
           }
 
-          print('users ${counting}');
+          print('users : ${counting}');
           //end users
         } catch (e) {
           print("error from users table" + e.toString());
         }
 
-        print("-------------------End Theme Table-------------------------------");
+        print("-------------------End User Table-----------------------------");
+
+
         print("-------------------livre Table-------------------------------");
 
         try {
 
           var get_livre_rows = await conn.query(
-              'SELECT * FROM  livre', []);
+              'SELECT * FROM livre', []);
 
           counting = 0;
           for (var row in get_livre_rows) {

@@ -45,7 +45,8 @@ class DB{
     email TEXT,
     password TEXT,
     role TEXT,
-    avatar TEXT)
+    avatar TEXT,
+    flagtransmis TEXT)
     ''');
     //table livre
     await db.execute('''
@@ -94,6 +95,9 @@ class DB{
   //Update
   static Future<int> update(String table, Map<String, dynamic> model,String id) async => await _db.update(table, model, where: 'id = ?', whereArgs: [id]);
 
+  //Update
+  static Future<int> updateTable(String table, Map<String, dynamic> model,int id) async => await _db.update(table, model, where: 'id = ?', whereArgs: [id]);
+
   //Query
   static Future<List<Map<String, dynamic>>> query() async => await _db.rawQuery('SELECT  FROM  WHERE ');
 
@@ -105,5 +109,8 @@ class DB{
 
   //Query Select All
   static Future<List<Map<String, dynamic>>> querySelect(String table) async => await _db.rawQuery('SELECT * FROM $table');
+
+  //Drop or delect table
+  static Future<List<Map<String, dynamic>>> troncateTable(String table) async => await _db.rawQuery('DELETE from "$table"');
 
 }

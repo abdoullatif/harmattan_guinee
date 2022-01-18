@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Harmattan_guinee/databases/sqflite_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -201,7 +203,7 @@ class _HomeViewState extends State<HomeView> {
                     } else {
                       //toast
                       Fluttertoast.showToast(
-                          msg: "Erreur de loggin !", //Présence enregistrée,
+                          msg: "Erreur de login !", //Présence enregistrée,
                           toastLength: Toast.LENGTH_LONG,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 5,
@@ -285,10 +287,73 @@ class _HomeViewState extends State<HomeView> {
                               //color: Colors.indigo,
                                 margin: EdgeInsets.only(bottom: 30.0),
                                 child: Align(
-                                  alignment: Alignment.center,
+                                  alignment: Alignment.centerRight,
                                   child: SizedBox(
                                     height: 30.0,
-                                    child: Text("Parametre", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),),
+                                    child: ElevatedButton.icon(
+                                      onPressed: () async{
+                                        var confirm = await showDialog<String>(
+                                            context: context,
+                                            builder: (BuildContext context){
+                                              return AlertDialog(
+                                                title: Text("ATTENTION"),
+                                                content: Text('Voulez vous vraiment videz la base de donnée de la tablette ?', style: TextStyle(color: Colors.red),),
+                                                actions: [
+                                                  ElevatedButton(
+                                                    child: Text('NON'),
+                                                    onPressed: (){
+                                                      Navigator.of(context).pop('non');
+                                                    },
+                                                  ),
+                                                  ElevatedButton(
+                                                    child: Text('Oui'),
+                                                    onPressed: (){
+                                                      Navigator.of(context).pop('oui');
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                        );
+                                        //troncate data
+                                        if (confirm == "oui") {
+
+                                          //Delect all dossier in database
+
+                                          List<Map<String, dynamic>> queryLivre = await DB.querySelect("livre");
+
+                                          if(queryLivre.isNotEmpty){
+                                            for (int i = 0; i < queryLivre.length; i++){
+                                              File folder = File('/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/${queryLivre[i]["titre"]}');
+                                              await folder.delete();
+                                            }
+                                          }
+
+                                          // Exepte Media
+                                          DB.troncateTable("users"); //table
+                                          DB.troncateTable("theme"); //table
+                                          DB.troncateTable("livre"); //table
+                                          DB.troncateTable("audio"); //table
+                                          DB.troncateTable("page"); //table
+
+                                          //Toaste
+                                          Fluttertoast.showToast(
+                                              msg: "La base de donnée a été nottoyer avec succès ! ",
+                                              toastLength: Toast.LENGTH_LONG,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 5,
+                                              backgroundColor: Colors.green,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0
+                                          );
+
+                                        }
+
+                                      },
+                                      icon: Icon(Icons.clear, size: 18),
+                                      label: Text("Reset Data", textAlign: TextAlign.center,),
+                                    ),
+                                    //Text("Parametre", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),),
                                   ),
                                 )
                             ),
@@ -407,12 +472,14 @@ class _HomeViewState extends State<HomeView> {
                                 hintText: "Mot de passe Utilisateur-server",
                                 //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
                               ),
+                              /*
                               validator: (value) {
                                 if (value.isEmpty) {
                                   return 'Veuiller entrer le Mot de passe Utilisateur-server';
                                 }
                                 return null;
                               },
+                              */
                             ),
                             SizedBox(height: 25.0),
                           ],
@@ -434,7 +501,7 @@ class _HomeViewState extends State<HomeView> {
                   List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
                   if(tab.isNotEmpty){
                     //On modifie les informations present
-                    await DB.update("parametre", {
+                    await DB.updateTable("parametre", {
                       "device": _device.text,
                       //"locate": "",
                       "dbname": _dbname.text,
@@ -499,7 +566,7 @@ class _HomeViewState extends State<HomeView> {
                 });
               },
               icon: Icon(Icons.clear, size: 18),
-              label: Text("Reset", textAlign: TextAlign.center,),
+              label: Text("Clear", textAlign: TextAlign.center,),
             ),
             /*
               TextButton(
