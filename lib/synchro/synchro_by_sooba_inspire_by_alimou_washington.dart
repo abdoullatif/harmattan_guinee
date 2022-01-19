@@ -152,37 +152,70 @@ class Synchro {
                 if ((users_update_time).toString().compareTo(
                     row['flagtransmis']) <
                     0) {
-                  await db.rawUpdate(
-                      'UPDATE `users` SET `nom`=?,`prenom`=?,`email`=?,`password`=?,`role`=?, `avatar`=?, `flagtransmis`=? WHERE `id`=?',
+
+                  print("download users image" + row['avatar']);
+                  var avatarName;
+                  if (row['couverture_theme'].toString().startsWith("\\"))
+                    avatarName = row['avatar']
+                        .toString()
+                        .replaceFirst(new RegExp(r'\\'), '');
+                  else
+                    avatarName = row['avatar'];
+                  // print(dossierName);
+                  Response response = await Dio().download(
+                      this.online_link + "/hamattan/public/" + this.onlinePath + "/utilisateur/" + avatarName,
+                      this.localPath + "/utilisateur/" + avatarName);
+                  print("response" + response.statusCode.toString());
+                  if (response.statusCode == 200) {
+                    await db.rawUpdate(
+                        'UPDATE `users` SET `nom`=?,`prenom`=?,`email`=?,`password`=?,`role`=?, `avatar`=?, `flagtransmis`=? WHERE `id`=?',
+                        [
+                          row['nom'],
+                          row['prenom'],
+                          row['email'],
+                          row['password'],
+                          row['role'],
+                          row['avatar'],
+                          row['flagtransmis'],
+                          row['id']
+
+                        ]);
+                    counting++;
+                  }
+
+                }
+              } else {
+
+                print("download users image" + row['avatar']);
+                var avatarName;
+                if (row['couverture_theme'].toString().startsWith("\\"))
+                  avatarName = row['avatar']
+                      .toString()
+                      .replaceFirst(new RegExp(r'\\'), '');
+                else
+                  avatarName = row['avatar'];
+                // print(dossierName);
+                Response response = await Dio().download(
+                    this.online_link + "/hamattan/public/" + this.onlinePath + "/utilisateur/" + avatarName,
+                    this.localPath + "/utilisateur/" + avatarName);
+                print("response" + response.statusCode.toString());
+                if (response.statusCode == 200) {
+                  //insert
+                  await db.rawQuery(
+                      'INSERT INTO `users`(`id`, `nom`, `prenom`, `email`, `password`, `role`, `avatar`, `flagtransmis`) VALUES (?,?,?,?,?,?,?,?)',
                       [
+                        row['id'],
                         row['nom'],
                         row['prenom'],
                         row['email'],
                         row['password'],
                         row['role'],
                         row['avatar'],
-                        row['flagtransmis'],
-                        row['id']
-
+                        row['flagtransmis']
                       ]);
                   counting++;
                 }
-              } else {
-                //insert
-                await db.rawQuery(
-                    'INSERT INTO `users`(`id`, `nom`, `prenom`, `email`, `password`, `role`, `avatar`, `flagtransmis`) VALUES (?,?,?,?,?,?,?,?)',
-                    [
-                      row['id'],
-                      row['nom'],
-                      row['prenom'],
-                      row['email'],
-                      row['password'],
-                      row['role'],
-                      row['avatar'],
-                      row['flagtrans'
-                          'mis']
-                    ]);
-                counting++;
+
               }
             }catch(e){
               print("error "+e.toString());
@@ -196,6 +229,113 @@ class Synchro {
         }
 
         print("-------------------End User Table-----------------------------");
+
+
+        print("-------------------Theme Table-------------------------------");
+
+        try {
+
+          var get_livre_rows = await conn.query(
+              'SELECT * FROM theme', []);
+
+          counting = 0;
+          for (var row in get_livre_rows) {
+            try{
+
+              var id = row['id'];
+
+              int exiting = Sqflite.firstIntValue(await db.rawQuery(
+                  'SELECT COUNT(*) FROM theme where id=?',
+                  [id]));
+
+              if (exiting != 0) {
+                //update
+                List<Map> theme_update = await db.rawQuery(
+                    'SELECT * FROM theme where id=?',
+                    [id]);
+                var theme_update_time;
+                if (theme_update.length == 0)
+                  theme_update_time = "";
+                else
+                  theme_update_time = theme_update.first['flagtransmis'];
+                if(theme_update_time.toString().compareTo("")!=0) {
+                  if ((theme_update_time)
+                      .toString()
+                      .compareTo(row['flagtransmis']) <
+                      0) {
+                    print("download theme image" + row['couverture_theme']);
+                    var couvertureName;
+                    if (row['couverture_theme'].toString().startsWith("\\"))
+                      couvertureName = row['couverture_theme']
+                          .toString()
+                          .replaceFirst(new RegExp(r'\\'), '');
+                    else
+                      couvertureName = row['couverture_theme'];
+                    // print(dossierName);
+                    Response response = await Dio().download(
+                        this.online_link + "/hamattan/public/" + this.onlinePath + "/themes/" + couvertureName,
+                        this.localPath + "/themes/" + couvertureName);
+                    print("response" + response.statusCode.toString());
+                    if (response.statusCode == 200) {
+                      counting++;
+                      await db.rawUpdate(
+                          'UPDATE `theme` SET `nom_theme`=?,`couverture_theme`=?,`flagtransmis`=? WHERE `id`=?',
+                          [
+                            row['nom_theme'],
+                            row['couverture_theme'],
+                            row['flagtransmis'],
+                            row['id']
+                          ]);
+                    }
+                  }
+                }
+              } else {
+
+                //insert
+
+                print("download theme couverture "+row['couverture_theme']);
+                var couvertureName;
+                if (row['couverture_theme'].toString().startsWith("\\"))
+                  couvertureName = row['couverture_theme']
+                      .toString()
+                      .replaceFirst(new RegExp(r'\\'), '');
+                else
+                  couvertureName = row['couverture_theme'];
+                print(this.online_link + "/hamattan/public/" + this.onlinePath + "/themes/" + couvertureName);
+                Response response = await Dio().download(
+                    this.online_link + "/hamattan/public/" + this.onlinePath + "/themes/" + couvertureName,
+                    this.localPath + "/themes/" + couvertureName);
+                print("response" + response.statusCode.toString());
+
+                //response.statusCode
+                if (response.statusCode == 200) {
+                  await db.rawQuery(
+                      'INSERT INTO `theme`(`id`,`nom_theme`, `couverture_theme`, `flagtransmis` )'
+                          ' VALUES (?,?,?,?)',
+                      [
+                        row['id'],
+                        row['nom_theme'],
+                        row['couverture_theme'],
+                        row['flagtransmis']
+
+                      ]);
+                  counting++;
+                }
+              }
+            }catch(e){
+              print('error theme row '+e.toString());
+            }
+
+          }
+
+          print('theme ${counting}');
+          //end personne
+
+        } catch (e) {
+          print("error from Theme table " + e.toString());
+        }
+
+        print("-------------------End Theme Table-------------------------------");
 
 
         print("-------------------livre Table-------------------------------");
@@ -232,16 +372,24 @@ class Synchro {
                       0) {
                     print("download livre dossier" + row['titre']);
                     var dossierName;
+                    var couvertureName;
                     if (row['titre'].toString().startsWith("\\"))
                       dossierName = row['titre']
                           .toString()
                           .replaceFirst(new RegExp(r'\\'), '');
                     else
                       dossierName = row['titre'];
+                    //
+                    if (row['couverture_livre'].toString().startsWith("\\"))
+                      couvertureName = row['couverture_livre']
+                          .toString()
+                          .replaceFirst(new RegExp(r'\\'), '');
+                    else
+                      couvertureName = row['couverture_livre'];
                     // print(dossierName);
                     Response response = await Dio().download(
-                        this.online_link + this.onlinePath + dossierName,
-                        this.localPath + "/livre/" + dossierName);
+                        this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + dossierName + "/" + couvertureName,
+                        this.localPath + "/livres/" + dossierName + "/" + couvertureName);
                     print("response" + response.statusCode.toString());
                     if (response.statusCode == 200) {
                       counting++;
@@ -269,20 +417,26 @@ class Synchro {
 
                 //insert
 
-                print("download livre dossier "+row['titre']);
+                print("download livre couverture "+row['titre']);
                 var dossierName;
-                if (row['images'].toString().startsWith("\\"))
+                var couvertureName;
+                if (row['titre'].toString().startsWith("\\"))
                   dossierName = row['titre']
                       .toString()
                       .replaceFirst(new RegExp(r'\\'), '');
                 else
                   dossierName = row['titre'];
-                // print(imageName);
-                print(this.online_link + this.onlinePath + dossierName.toString());
-
+                //
+                if (row['couverture_livre'].toString().startsWith("\\"))
+                  couvertureName = row['couverture_livre']
+                      .toString()
+                      .replaceFirst(new RegExp(r'\\'), '');
+                else
+                  couvertureName = row['couverture_livre'];
+                // print(dossierName);
                 Response response = await Dio().download(
-                    this.online_link + this.onlinePath + dossierName,
-                    this.localPath + "/livre/" +dossierName);
+                    this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + dossierName + "/" + couvertureName,
+                    this.localPath + "/livres/" + dossierName + "/" + couvertureName);
                 print("response" + response.statusCode.toString());
 
                 //response.statusCode
@@ -323,6 +477,238 @@ class Synchro {
         }
 
         print("-------------------End livre Table-------------------------------");
+
+
+        print("-------------------Page Table-------------------------------");
+
+        try {
+
+          var get_livre_rows = await conn.query(
+              'SELECT * FROM page', []);
+
+          counting = 0;
+          for (var row in get_livre_rows) {
+            try{
+
+              var id = row['id'];
+              var livre_id = row['livre_id'];
+
+              int exiting = Sqflite.firstIntValue(await db.rawQuery(
+                  'SELECT COUNT(*) FROM page where id=?',
+                  [id]));
+
+              if (exiting != 0) {
+                //update
+                List<Map> page_update = await db.rawQuery(
+                    'SELECT * FROM page where id=?',
+                    [id]);
+                var page_update_time;
+                if (page_update.length == 0)
+                  page_update_time = "";
+                else
+                  page_update_time = page_update.first['flagtransmis'];
+                if(page_update_time.toString().compareTo("")!=0) {
+                  if ((page_update_time)
+                      .toString()
+                      .compareTo(row['flagtransmis']) <
+                      0) {
+                    print("download page pdf" + row['page_livre']);
+                    var pageName;
+                    if (row['page_livre'].toString().startsWith("\\"))
+                      pageName = row['page_livre']
+                          .toString()
+                          .replaceFirst(new RegExp(r'\\'), '');
+                    else
+                      pageName = row['page_livre'];
+                    // Livre
+                    List<Map> livreFolder = await db.rawQuery(
+                        'SELECT * FROM livre where id=?',
+                        [livre_id]);
+                    //
+                    Response response = await Dio().download(
+                        this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + livreFolder.first['titre'] + "/" + pageName,
+                        this.localPath + "/livres/" + livreFolder.first['titre'] + "/" + pageName);
+                    print("response" + response.statusCode.toString());
+                    if (response.statusCode == 200) {
+                      counting++;
+                      await db.rawUpdate(
+                          'UPDATE `page` SET `page_livre`=?,`livre_id`=?,`flagtransmis`=? WHERE `id`=?',
+                          [
+                            row['page_livre'],
+                            row['livre_id'],
+                            row['flagtransmis'],
+                            row['id']
+                          ]);
+                    }
+                  }
+                }
+              } else {
+
+                //insert
+
+                print("download page pdf "+row['page_livre']);
+                var pageName;
+                if (row['page_livre'].toString().startsWith("\\"))
+                  pageName = row['page_livre']
+                      .toString()
+                      .replaceFirst(new RegExp(r'\\'), '');
+                else
+                  pageName = row['page_livre'];
+                // Livre
+                List<Map> livreFolder = await db.rawQuery(
+                    'SELECT * FROM livre where id=?',
+                    [livre_id]);
+                //
+                Response response = await Dio().download(
+                    this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + livreFolder.first['titre'] + "/" + pageName,
+                    this.localPath + "/livres/" + livreFolder.first['titre'] + "/" + pageName);
+                print("response" + response.statusCode.toString());
+
+                //response.statusCode
+                if (response.statusCode == 200) {
+                  await db.rawQuery(
+                      'INSERT INTO `page`(`id`,`page_livre`, `livre_id`, `flagtransmis` )'
+                          ' VALUES (?,?,?,?)',
+                      [
+                        row['id'],
+                        row['page_livre'],
+                        row['livre_id'],
+                        row['flagtransmis']
+
+                      ]);
+                  counting++;
+                }
+              }
+            }catch(e){
+              print('error page row '+e.toString());
+            }
+
+          }
+
+          print('page ${counting}');
+          //end personne
+
+        } catch (e) {
+          print("error from page table " + e.toString());
+        }
+
+        print("-------------------End Page Table-------------------------------");
+
+
+        print("-------------------Audio Table-------------------------------");
+
+        try {
+
+          var get_livre_rows = await conn.query(
+              'SELECT * FROM audio', []);
+
+          counting = 0;
+          for (var row in get_livre_rows) {
+            try{
+
+              var id = row['id'];
+              var livre_id = row['livre_id'];
+
+              int exiting = Sqflite.firstIntValue(await db.rawQuery(
+                  'SELECT COUNT(*) FROM audio where id=?',
+                  [id]));
+
+              if (exiting != 0) {
+                //update
+                List<Map> audio_update = await db.rawQuery(
+                    'SELECT * FROM audio where id=?',
+                    [id]);
+                var audio_update_time;
+                if (audio_update.length == 0)
+                  audio_update_time = "";
+                else
+                  audio_update_time = audio_update.first['flagtransmis'];
+                if(audio_update_time.toString().compareTo("")!=0) {
+                  if ((audio_update_time)
+                      .toString()
+                      .compareTo(row['flagtransmis']) <
+                      0) {
+                    print("download audio" + row['contenue_audio']);
+                    var audioName;
+                    if (row['contenue_audio'].toString().startsWith("\\"))
+                      audioName = row['contenue_audio']
+                          .toString()
+                          .replaceFirst(new RegExp(r'\\'), '');
+                    else
+                      audioName = row['contenue_audio'];
+                    // Livre
+                    List<Map> livreFolder = await db.rawQuery(
+                        'SELECT * FROM livre where id=?',
+                        [livre_id]);
+                    //
+                    Response response = await Dio().download(
+                        this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + livreFolder.first['titre'] + "/" + audioName,
+                        this.localPath + "/livres/" + livreFolder.first['titre'] + "/" + audioName);
+                    print("response" + response.statusCode.toString());
+                    if (response.statusCode == 200) {
+                      counting++;
+                      await db.rawUpdate(
+                          'UPDATE `audio` SET `contenue_audio`=?,`livre_id`=?,`flagtransmis`=? WHERE `id`=?',
+                          [
+                            row['contenue_audio'],
+                            row['livre_id'],
+                            row['flagtransmis'],
+                            row['id']
+                          ]);
+                    }
+                  }
+                }
+              } else {
+
+                //insert
+
+                print("download audio "+row['contenue_audio']);
+                var audioName;
+                if (row['contenue_audio'].toString().startsWith("\\"))
+                  audioName = row['contenue_audio']
+                      .toString()
+                      .replaceFirst(new RegExp(r'\\'), '');
+                else
+                  audioName = row['contenue_audio'];
+                // Livre
+                List<Map> livreFolder = await db.rawQuery(
+                    'SELECT * FROM livre where id=?',
+                    [livre_id]);
+                //
+                Response response = await Dio().download(
+                    this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + livreFolder.first['titre'] + "/" + audioName,
+                    this.localPath + "/livres/" + livreFolder.first['titre'] + "/" + audioName);
+                print("response" + response.statusCode.toString());
+
+                //response.statusCode
+                if (response.statusCode == 200) {
+                  await db.rawQuery(
+                      'INSERT INTO `page`(`id`,`contenue_audio`, `livre_id`, `flagtransmis` )'
+                          ' VALUES (?,?,?,?)',
+                      [
+                        row['id'],
+                        row['contenue_audio'],
+                        row['livre_id'],
+                        row['flagtransmis']
+
+                      ]);
+                  counting++;
+                }
+              }
+            }catch(e){
+              print('error audio row '+e.toString());
+            }
+
+          }
+
+          print('audio ${counting}');
+          //end personne
+
+        } catch (e) {
+          print("error from audio table " + e.toString());
+        }
+
+        print("-------------------End Audio Table-------------------------------");
 
 
 

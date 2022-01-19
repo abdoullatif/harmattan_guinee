@@ -5,6 +5,7 @@ import 'package:Harmattan_guinee/controller/resumeController.dart';
 import 'package:Harmattan_guinee/controller/slidehomeController.dart';
 import 'package:Harmattan_guinee/controller/themeController.dart';
 import 'package:Harmattan_guinee/synchro/synchro_by_sooba_inspire_by_alimou_washington.dart';
+import 'package:Harmattan_guinee/utils/parametre.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'controller/homeController.dart';
@@ -28,13 +29,14 @@ void main() async{
   HttpOverrides.global = new MyHttpOverrides();
   //Init db
   await DB.init();
+  await Parametre.createFolder();
   //DB local parametre
   List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
   if(tab.isNotEmpty){
     //send data for init synchronisation
     synchronisation = Synchro("/data/user/0/com.tulipindustries.Harmattan_guinee/databasesharmattan",
         "/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/"
-        ,"uploads/",tab[0]['user'],tab[0]['mdp'],tab[0]['dbname'],tab[0]['ip_server'],tab[0]['adresse_server']);
+        ,"uploads",tab[0]['user'],tab[0]['mdp'],tab[0]['dbname'],tab[0]['ip_server'],tab[0]['adresse_server']);
     synchronisation.synchronize();
   }
   //Orientation Paysage
