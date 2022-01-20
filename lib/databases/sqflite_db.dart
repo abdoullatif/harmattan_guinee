@@ -12,13 +12,15 @@ class DB{
     if (_db != null) return;
     try{
       String _path = await getDatabasesPath() + 'harmattan';
-      print("succes");
+      print("success");
       print(_path);
-      _db = (await openDatabase(_path, version: _version, onCreate: onCreate)) as Database;
+      _db = (await openDatabase(_path, version: _version, onCreate: onCreate)) ;// as Database
     } catch (ex){
       print(ex);
     }
   }
+
+  static Database get daba => _db;
 
   //onCreate
   static void onCreate(Database db, int version) async{

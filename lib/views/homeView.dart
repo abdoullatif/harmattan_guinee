@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class HomeView extends StatefulWidget {
+  //variable
   final int nombre;
+
   const HomeView(this.nombre, {Key key}) : super(key: key);
 
   @override
