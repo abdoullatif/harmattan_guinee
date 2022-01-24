@@ -24,7 +24,6 @@ class _ThemeViewState extends State<ThemeView> {
     final formGlobalKey = GlobalKey<FormState>();
     //
 
-
     return Container(
       child: Padding(
         padding: EdgeInsets.only(left: 100,right: 100,top: 50),
@@ -56,7 +55,7 @@ class _ThemeViewState extends State<ThemeView> {
                 SizedBox(height: 20,),
                 Divider(),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 1.3,
+                  height: MediaQuery.of(context).size.height / 1.5,
                   child: FutureBuilder(
                       future: widget.themes,
                       builder: (context, AsyncSnapshot snapshot){
@@ -80,12 +79,17 @@ class _ThemeViewState extends State<ThemeView> {
                                     foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                                   ),
                                   onPressed: () {
-                                    Navigator.pushNamed(context, '/biblioteque');
+                                    Navigator.pushNamed(context, '/biblioteque', arguments: data[index]['id']);
                                   },
-                                  child: Image.file(
-                                    File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/themes/${data[index]['couverture_theme']}"),
-                                    width: 400,
-                                    height: 400,
+                                  child: Column(
+                                    children: [
+                                      Image.file(
+                                        File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/themes/${data[index]['couverture_theme']}"),
+                                        width: 300,
+                                        height: 300,
+                                      ),
+                                      Text(data[index]['nom_theme']),
+                                    ],
                                   ),
                                 );
                               }),

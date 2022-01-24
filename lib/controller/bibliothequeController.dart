@@ -1,3 +1,4 @@
+import 'package:Harmattan_guinee/model/livre.dart';
 import 'package:Harmattan_guinee/views/bibliothequeView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,8 +9,12 @@ class BibliothequeController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Traitement biblioteque
+    final themes_id = ModalRoute.of(context).settings.arguments;
+    var livreThematique = Livre.SelectWhereTheme(int.parse(themes_id));
+
     return Scaffold(
-      body: BibliothequeView(),
+      body: BibliothequeView(livreThematique),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           //print('exit');
