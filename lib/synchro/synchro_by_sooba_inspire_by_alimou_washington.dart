@@ -153,7 +153,7 @@ class Synchro {
                     row['flagtransmis']) <
                     0) {
 
-                  print("download users image" + row['avatar']);
+                  print("download users " + row['avatar']);
                   var avatarName;
                   if (row['couverture_theme'].toString().startsWith("\\"))
                     avatarName = row['avatar']
@@ -165,7 +165,7 @@ class Synchro {
                   Response response = await Dio().download(
                       this.online_link + "/hamattan/public/" + this.onlinePath + "/utilisateur/" + avatarName,
                       this.localPath + "/utilisateur/" + avatarName);
-                  print("response" + response.statusCode.toString());
+                  print("response " + response.statusCode.toString());
                   if (response.statusCode == 200) {
                     await db.rawUpdate(
                         'UPDATE `users` SET `nom`=?,`prenom`=?,`email`=?,`password`=?,`role`=?, `avatar`=?, `flagtransmis`=? WHERE `id`=?',
@@ -186,9 +186,9 @@ class Synchro {
                 }
               } else {
 
-                print("download users image" + row['avatar']);
+                print("download users " + row['avatar']);
                 var avatarName;
-                if (row['couverture_theme'].toString().startsWith("\\"))
+                if (row['avatar'].toString().startsWith("\\"))
                   avatarName = row['avatar']
                       .toString()
                       .replaceFirst(new RegExp(r'\\'), '');
@@ -373,36 +373,48 @@ class Synchro {
                     print("download livre dossier" + row['titre']);
                     var dossierName;
                     var couvertureName;
+                    var extraireName;
+                    /*
                     if (row['titre'].toString().startsWith("\\"))
                       dossierName = row['titre']
                           .toString()
                           .replaceFirst(new RegExp(r'\\'), '');
-                    else
+                    else*/
                       dossierName = row['titre'];
                     //
+                    /*
                     if (row['couverture_livre'].toString().startsWith("\\"))
                       couvertureName = row['couverture_livre']
                           .toString()
                           .replaceFirst(new RegExp(r'\\'), '');
-                    else
+                    else*/
                       couvertureName = row['couverture_livre'];
+                    extraireName = row['extraire'];
                     // print(dossierName);
                     Response response = await Dio().download(
                         this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + dossierName + "/" + couvertureName,
                         this.localPath + "/livres/" + dossierName + "/" + couvertureName);
+                    //
+                    Response response2 = await Dio().download(
+                        this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + dossierName + "/" + extraireName,
+                        this.localPath + "/livres/" + dossierName + "/" + extraireName);
+                    //
                     print("response" + response.statusCode.toString());
-                    if (response.statusCode == 200) {
+                    print("response2" + response2.statusCode.toString());
+                    if (response.statusCode == 200 && response2.statusCode == 200) {
                       counting++;
                       await db.rawUpdate(
-                          'UPDATE `livre` SET `titre`=?,`resume_livre`=?,`biographie_auteur`=?,`statut`=?,`categorie`=?,`prix`=?,`couverture_livre`=?,`date_publication`=?,`theme_id`=?,`users_id`=?,`flagtransmis`=? WHERE `id`=?',
+                          'UPDATE `livre` SET `titre`=?,`resume_livre`=?,`biographie_auteur`=?,`statut`=?,`categorie`=?, `type_vente`=?,`prix`=?,`couverture_livre`=?, `extraire`=?,`date_publication`=?,`theme_id`=?,`users_id`=?,`flagtransmis`=? WHERE `id`=?',
                           [
                             row['titre'],
-                            row['resume_livre'],
-                            row['biographie_auteur'],
+                            row['resume_livre'].toString(),
+                            row['biographie_auteur'].toString(),
                             row['statut'],
                             row['categorie'],
+                            row['type_vente'],
                             row['prix'],
                             row['couverture_livre'],
+                            row['extraire'],
                             row['date_publication'],
                             //dossierName,
                             row['theme_id'],
@@ -420,39 +432,51 @@ class Synchro {
                 print("download livre couverture "+row['titre']);
                 var dossierName;
                 var couvertureName;
-                if (row['titre'].toString().startsWith("\\"))
-                  dossierName = row['titre']
-                      .toString()
-                      .replaceFirst(new RegExp(r'\\'), '');
-                else
-                  dossierName = row['titre'];
+                var extraireName;
+                /*
+                    if (row['titre'].toString().startsWith("\\"))
+                      dossierName = row['titre']
+                          .toString()
+                          .replaceFirst(new RegExp(r'\\'), '');
+                    else*/
+                dossierName = row['titre'];
                 //
-                if (row['couverture_livre'].toString().startsWith("\\"))
-                  couvertureName = row['couverture_livre']
-                      .toString()
-                      .replaceFirst(new RegExp(r'\\'), '');
-                else
-                  couvertureName = row['couverture_livre'];
+                /*
+                    if (row['couverture_livre'].toString().startsWith("\\"))
+                      couvertureName = row['couverture_livre']
+                          .toString()
+                          .replaceFirst(new RegExp(r'\\'), '');
+                    else*/
+                couvertureName = row['couverture_livre'];
+                extraireName = row['extraire'];
                 // print(dossierName);
                 Response response = await Dio().download(
                     this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + dossierName + "/" + couvertureName,
                     this.localPath + "/livres/" + dossierName + "/" + couvertureName);
-                print("response" + response.statusCode.toString());
+                //
+                Response response2 = await Dio().download(
+                    this.online_link + "/hamattan/public/" + this.onlinePath + "/livres/" + dossierName + "/" + extraireName,
+                    this.localPath + "/livres/" + dossierName + "/" + extraireName);
+                //
+                print("response " + response.statusCode.toString());
+                print("response2 " + response2.statusCode.toString());
 
                 //response.statusCode
-                if (response.statusCode == 200) {
+                if (response.statusCode == 200 && response2.statusCode == 200) {
                   await db.rawQuery(
                       'INSERT INTO `livre`(`id`,`titre`, `resume_livre`, `biographie_auteur`, `statut`, '
-                          ' `categorie`, `prix`, `couverture_livre`, `date_publication`, `theme_id`, users_id, `flagtransmis`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+                          ' `categorie`, `type_vente`, `prix`, `couverture_livre`, `extraire`, `date_publication`, `theme_id`, users_id, `flagtransmis`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                       [
                         row['id'],
                         row['titre'],
-                        row['resume_livre'],
-                        row['biographie_auteur'],
+                        row['resume_livre'].toString(),
+                        row['biographie_auteur'].toString(),
                         row['statut'],
                         row['categorie'],
+                        row['type_vente'],
                         row['prix'],
                         row['couverture_livre'],
+                        row['extraire'],
                         row['date_publication'],
                         //dossierName,
                         row['theme_id'],
@@ -683,7 +707,7 @@ class Synchro {
                 //response.statusCode
                 if (response.statusCode == 200) {
                   await db.rawQuery(
-                      'INSERT INTO `page`(`id`,`contenue_audio`, `livre_id`, `flagtransmis` )'
+                      'INSERT INTO `audio`(`id`,`contenue_audio`, `livre_id`, `flagtransmis` )'
                           ' VALUES (?,?,?,?)',
                       [
                         row['id'],

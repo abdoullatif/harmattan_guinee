@@ -128,7 +128,6 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
           //
           var data = snapshot.data;
 
-          print(data);
 
           return Stack(
             children: <Widget>[
@@ -174,8 +173,7 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
                   });
                 },
               ),
-              errorMessage.isEmpty
-                  ? !isReady
+              errorMessage.isEmpty? !isReady
                   ? Center(
                 child: CircularProgressIndicator(),
               )

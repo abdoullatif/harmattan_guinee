@@ -34,6 +34,12 @@ class Livre {
   //Select where titre
   static Future<List<Map<String, dynamic>>> SelectWhereTitre(String titre) async => await _db.rawQuery('SELECT * FROM livre WHERE titre = "' + titre + '"');
 
+  //Select where type
+  static Future<List<Map<String, dynamic>>> SelectWhereType(String type_vente) async => await _db.rawQuery('SELECT * FROM livre WHERE type_vente = "' + type_vente + '"');
+
+  //Select where titre
+  static Future<List<Map<String, dynamic>>> SelectWhereTypeTheme(int id,String type_vente) async => await _db.rawQuery('SELECT * FROM livre WHERE type_vente = "' + type_vente + '" or theme_id = $id');
+
   //Select where Theme_id
   static Future<List<Map<String, dynamic>>> SelectWhereTheme(int id) async => await _db.rawQuery('SELECT * FROM livre WHERE theme_id = $id');
 

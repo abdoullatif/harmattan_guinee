@@ -71,7 +71,7 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                     images: couvertureLivre,
                     titles: titre,
                     textStyle: TextStyle(color: Colors.red),
-                    //displayOnlyCenterTitle: true,
+                    displayOnlyCenterTitle: true,
                     onCenterItemSelected: (index) {
                       //print('Selected Item\'s index: $index');
                       nom_livre = titre.elementAt(index);

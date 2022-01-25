@@ -10,8 +10,9 @@ class BibliothequeController extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Traitement biblioteque
-    final themes_id = ModalRoute.of(context).settings.arguments;
-    var livreThematique = Livre.SelectWhereTheme(int.parse(themes_id));
+    final parametre = ModalRoute.of(context).settings.arguments;
+    //var livreThematique = Livre.SelectWhereTheme(int.parse(themes_id));
+    var livreThematique = Livre.SelectWhereTypeTheme(int.tryParse(parametre) ?? 00,parametre);
 
     return Scaffold(
       body: BibliothequeView(livreThematique),

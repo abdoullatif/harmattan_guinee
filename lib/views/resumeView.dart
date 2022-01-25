@@ -154,7 +154,7 @@ class _ResumeViewState extends State<ResumeView> {
                                       //Navigator.pushNamed(context, '/lecture');
                                     },
                                     icon: Icon(Icons.audiotrack, size: 18),
-                                    label: Text('Ecouter un extraire'),
+                                    label: Text('Ecouter'),
                                   ),
                                 ],
                               ),

@@ -67,7 +67,7 @@ class _HomeViewState extends State<HomeView> {
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/biblioteque');
+                        Navigator.pushNamed(context, '/biblioteque', arguments: 'Promo');
                       },
                       child: Image.asset("assets/home/livre_promo.png"),
                     ),
@@ -246,7 +246,7 @@ class _HomeViewState extends State<HomeView> {
     TextEditingController _device = TextEditingController();
     TextEditingController _adresse_server = TextEditingController();
     TextEditingController _ip_server = TextEditingController();
-    //TextEditingController _site_pdaig = TextEditingController();
+    //TextEditingController _site_harmattan = TextEditingController();
     TextEditingController _user = TextEditingController();
     TextEditingController _mdp = TextEditingController();
     TextEditingController _dbname = TextEditingController();
@@ -322,12 +322,28 @@ class _HomeViewState extends State<HomeView> {
 
                                           //Delect all dossier in database
 
-                                          List<Map<String, dynamic>> queryLivre = await DB.querySelect("livre");
+                                          List<Map<String, dynamic>> Livre = await DB.querySelect("livre");
+                                          List<Map<String, dynamic>> Theme = await DB.querySelect("theme");
+                                          List<Map<String, dynamic>> Utilisateur = await DB.querySelect("users");
 
-                                          if(queryLivre.isNotEmpty){
-                                            for (int i = 0; i < queryLivre.length; i++){
-                                              File folder = File('/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/${queryLivre[i]["titre"]}');
-                                              await folder.delete();
+                                          if(Livre.isNotEmpty){
+                                            for (int i = 0; i < Livre.length; i++){
+                                              final folder = Directory('/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${Livre[i]["titre"]}');
+                                              folder.deleteSync(recursive: true);
+                                            }
+                                          }
+
+                                          if(Theme.isNotEmpty){
+                                            for (int i = 0; i < Theme.length; i++){
+                                              File couverture_theme = File('/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/themes/${Theme[i]["couverture_theme"]}');
+                                              await couverture_theme.delete();
+                                            }
+                                          }
+
+                                          if(Utilisateur.isNotEmpty){
+                                            for (int i = 0; i < Utilisateur.length; i++){
+                                              File avatar = File('/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/utilisateur/${Utilisateur[i]["avatar"]}');
+                                              if (avatar.exists() != null) await avatar.delete();
                                             }
                                           }
 
@@ -353,7 +369,7 @@ class _HomeViewState extends State<HomeView> {
 
                                       },
                                       icon: Icon(Icons.clear, size: 18),
-                                      label: Text("Reset Data", textAlign: TextAlign.center,),
+                                      label: Text("Suprimer les Donnees", textAlign: TextAlign.center,),
                                     ),
                                     //Text("Parametre", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,),),
                                   ),
