@@ -33,133 +33,175 @@ class _ResumeViewState extends State<ResumeView> {
 
             var data = snapshot.data;
 
-            return Padding(
-              padding: EdgeInsets.only(left: 30,right: 30, top: 50),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 3,
-                          child: Image.file(
-                            File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[0]['titre']}/${data[0]['couverture_livre']}"),
-                            width: 400,
-                            height: 700,
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5),
+                      BlendMode.dstATop),
+                  image: AssetImage("assets/background/planche.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(left: 30,right: 30, top: 50),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: Image.file(
+                              File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[0]['titre']}/${data[0]['couverture_livre']}"),
+                              width: 400,
+                              height: 700,
+                            ),
                           ),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 1.8,
-                          child: Column(
-                            children: [
-                              Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Text(
-                                  '${data[0]['titre']}',
-                                  textAlign: TextAlign.start,
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                    color: Colors.grey[800],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 35,
+                          Container(
+                            width: MediaQuery.of(context).size.width / 1.8,
+                            padding: EdgeInsets.all(15.0),
+                            decoration: new BoxDecoration(
+                                border: new Border.all(width: 4.0 ,color: Colors.transparent), //color is transparent so that it does not blend with the actual color specified
+                                borderRadius: const BorderRadius.all(const Radius.circular(30.0)),
+                                color: new Color.fromRGBO(255, 255, 255, 0.5) // Specifies the background color and the opacity
+                            ),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    '${data[0]['titre']}',
+                                    textAlign: TextAlign.left,
+                                    textDirection: TextDirection.rtl,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 35,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 30,),
-                              DefaultTabController(
-                                length: 2,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Container(
-                                      child: TabBar(
+                                SizedBox(height: 30,),
+                                DefaultTabController(
+                                  length: 2,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Container(
+                                        child: TabBar(
+                                          labelStyle: TextStyle(
+                                            fontSize: 22.0,
+                                            fontFamily: 'Family Name',
+                                            fontWeight: FontWeight.w900,
+                                          ),
                                           indicatorColor: Colors.blue,
-                                          unselectedLabelColor: Colors.grey,
+                                          unselectedLabelColor: Colors.white,
                                           labelColor: Colors.blue,
+
                                           tabs: [
-                                            Tab(text: "Resume"),
-                                            Tab(text: "Biographie de l'auteur"),
-                                            //Tab(text: "User"),
+                                            Tab(
+                                              text: "Resume",
+                                              //icon: ,
+                                            ),
+                                            Tab(
+                                                text: "Biographie de l'auteur",
+                                            ),
                                           ]
+                                        ),
                                       ),
+                                      Container(
+                                        //Add this to give height
+                                        height: MediaQuery.of(context).size.height /2.5,
+                                        child: TabBarView(
+                                            children: [
+                                              SingleChildScrollView(
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(height: 30,),
+                                                    Text(
+                                                      "${data[0]['resume_livre']}",
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 25,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SingleChildScrollView(
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(height: 30,),
+                                                    Text(
+                                                      "${data[0]['biographie_auteur']}",
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 25,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ]
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 30,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                        //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                      ),
+                                      onPressed: () {
+                                        _showDialogBuy(context);
+                                      },
+                                      icon: Icon(Icons.shopping_cart, size: 18),
+                                      label: Text('Acheter'),
                                     ),
-                                    Container(
-                                      //Add this to give height
-                                      height: MediaQuery.of(context).size.height /2.5,
-                                      child: TabBarView(
-                                          children: [
-                                            SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 30,),
-                                                  Text("${data[0]['resume_livre']}"),
-                                                ],
-                                              ),
-                                            ),
-                                            SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  SizedBox(height: 30,),
-                                                  Text("${data[0]['biographie_auteur']}"),
-                                                ],
-                                              ),
-                                            ),
-                                          ]
+                                    SizedBox(width: 20,),
+                                    ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                        //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                                       ),
+                                      onPressed: () {
+                                        _showDialogReceive(context);
+                                      },
+                                      icon: Icon(Icons.send, size: 18),
+                                      label: Text('Recevoir un extraire'),
+                                    ),
+                                    SizedBox(width: 20,),
+                                    ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                        //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/lecture', arguments: data[0]['id']);
+                                      },
+                                      icon: Icon(Icons.book_rounded, size: 18),
+                                      label: Text('Lire'),
+                                    ),
+                                    SizedBox(width: 20,),
+                                    ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                        //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                      ),
+                                      onPressed: () {
+                                        //Navigator.pushNamed(context, '/lecture');
+                                      },
+                                      icon: Icon(Icons.audiotrack, size: 18),
+                                      label: Text('Ecouter'),
                                     ),
                                   ],
                                 ),
-                              ),
-                              SizedBox(height: 30,),
-                              Row(
-                                children: [
-                                  ElevatedButton.icon(
-                                    style: ButtonStyle(
-                                      //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      _showDialogBuy(context);
-                                    },
-                                    icon: Icon(Icons.shopping_cart, size: 18),
-                                    label: Text('Acheter'),
-                                  ),
-                                  SizedBox(width: 20,),
-                                  ElevatedButton.icon(
-                                    style: ButtonStyle(
-                                      //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      _showDialogReceive(context);
-                                    },
-                                    icon: Icon(Icons.send, size: 18),
-                                    label: Text('Recevoir un extraire'),
-                                  ),
-                                  SizedBox(width: 20,),
-                                  ElevatedButton.icon(
-                                    style: ButtonStyle(
-                                      //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, '/lecture', arguments: data[0]['id']);
-                                    },
-                                    icon: Icon(Icons.book_rounded, size: 18),
-                                    label: Text('Lire'),
-                                  ),
-                                  SizedBox(width: 20,),
-                                  ElevatedButton.icon(
-                                    style: ButtonStyle(
-                                      //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      //Navigator.pushNamed(context, '/lecture');
-                                    },
-                                    icon: Icon(Icons.audiotrack, size: 18),
-                                    label: Text('Ecouter'),
-                                  ),
-                                ],
-                              ),
-                              Divider(),
-                              /*
+                                Divider(),
+                                /*
                               Text('Laisser un commentaire'),
                               TextField(
                                 keyboardType: TextInputType.multiline,
@@ -167,12 +209,13 @@ class _ResumeViewState extends State<ResumeView> {
                                 minLines: 1,
                                 maxLines: 5,
                               ),*/
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

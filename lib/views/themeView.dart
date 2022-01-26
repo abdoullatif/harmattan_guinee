@@ -74,22 +74,25 @@ class _ThemeViewState extends State<ThemeView> {
                               mainAxisSpacing: 10,
                               crossAxisCount: 3,
                               children: List.generate(n, (index) {
-                                return TextButton(
-                                  style: ButtonStyle(
-                                    foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/biblioteque', arguments: data[index]['id']);
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Image.file(
-                                        File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/themes/${data[index]['couverture_theme']}"),
-                                        width: 300,
-                                        height: 300,
-                                      ),
-                                      Text(data[index]['nom_theme']),
-                                    ],
+                                return Card(
+                                  elevation: 5.0,
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                      foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, '/biblioteque', arguments: data[index]['id']);
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Image.file(
+                                          File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/themes/${data[index]['couverture_theme']}"),
+                                          width: 300,
+                                          height: 300,
+                                        ),
+                                        Text(data[index]['nom_theme']),
+                                      ],
+                                    ),
                                   ),
                                 );
                               }),

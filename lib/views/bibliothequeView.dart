@@ -65,23 +65,34 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                 "Title2",
               ];
 
-              return Center(
-                child: SizedBox(
-                  child: CoverFlow(
-                    images: couvertureLivre,
-                    titles: titre,
-                    textStyle: TextStyle(color: Colors.red),
-                    displayOnlyCenterTitle: true,
-                    onCenterItemSelected: (index) {
-                      //print('Selected Item\'s index: $index');
-                      nom_livre = titre.elementAt(index);
-                      Navigator.pushNamed(context, '/resume', arguments: nom_livre);
-                    },
-                    shadowOpacity: 0.3,
-                    shadowOffset: Offset(3, 8),
+              return Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5),
+                        BlendMode.dstATop),
+                    image: AssetImage("assets/background/planche.png"),
+                    fit: BoxFit.cover,
                   ),
                 ),
+                child: Center(
+                  child: SizedBox(
+                    child: CoverFlow(
+                      images: couvertureLivre,
+                      titles: titre,
+                      textStyle: TextStyle(color: Colors.black),
+                      displayOnlyCenterTitle: true,
+                      onCenterItemSelected: (index) {
+                        //print('Selected Item\'s index: $index');
+                        nom_livre = titre.elementAt(index);
+                        Navigator.pushNamed(context, '/resume', arguments: nom_livre);
+                      },
+                      shadowOpacity: 0.3,
+                      shadowOffset: Offset(3, 8),
+                    ),
+                  ),
 
+                ),
               );
             } else {
               return const Text('Empty data');
