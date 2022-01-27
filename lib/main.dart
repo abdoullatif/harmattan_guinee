@@ -8,6 +8,7 @@ import 'package:Harmattan_guinee/synchro/synchro_by_sooba_inspire_by_alimou_wash
 import 'package:Harmattan_guinee/utils/parametre.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'controller/bibliothequeAudioController.dart';
 import 'controller/homeController.dart';
 import 'databases/sqflite_db.dart';
 
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeController(),
         '/themes': (context) => const ThemeController(),
         '/biblioteque': (context) => const BibliothequeController(),
+        '/bibliotequeAudio': (context) => const BibliothequeAudioController(),
         '/resume': (context) => const ResumeController(),
         '/lecture': (context) => const LectureController(),
       },

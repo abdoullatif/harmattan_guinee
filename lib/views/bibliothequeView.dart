@@ -34,6 +34,7 @@ class _BibliothequeViewState extends State<BibliothequeView> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           } else if (snapshot.connectionState == ConnectionState.done) {
+
             if (snapshot.hasError) {
               return const Text('Error');
             } else if (snapshot.hasData) {
@@ -45,11 +46,9 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                 couvertureLivre.add(
                     Image.file(
                       File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[i]['titre']}/${data[i]['couverture_livre']}"),
-                      width: 400,
-                      height: 600,
                     ),
                 );
-                titre.add(data[i]['titre']);
+                titre.add(data[i]['titre'].replaceAll('_',' '));
                 //end boucle
               }
 
@@ -80,12 +79,12 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                     child: CoverFlow(
                       images: couvertureLivre,
                       titles: titre,
-                      textStyle: TextStyle(color: Colors.black),
+                      textStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,backgroundColor: Colors.white,height: 10,),
                       displayOnlyCenterTitle: true,
                       onCenterItemSelected: (index) {
                         //print('Selected Item\'s index: $index');
                         nom_livre = titre.elementAt(index);
-                        Navigator.pushNamed(context, '/resume', arguments: nom_livre);
+                        Navigator.pushNamed(context, '/resume', arguments: nom_livre.replaceAll(' ','_'));
                       },
                       shadowOpacity: 0.3,
                       shadowOffset: Offset(3, 8),

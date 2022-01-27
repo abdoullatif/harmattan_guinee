@@ -23,7 +23,7 @@ class ResumeController extends StatelessWidget {
         },
         tooltip: 'Quitter',
         backgroundColor: Colors.red,
-        child: Icon(Icons.exit_to_app),
+        child: Icon(Icons.exit_to_app,  size: 35,),
       ),
     );
   }

@@ -52,32 +52,39 @@ class _ResumeViewState extends State<ResumeView> {
                         children: [
                           Container(
                             width: MediaQuery.of(context).size.width / 3,
+                            //height: 800,
                             child: Image.file(
                               File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[0]['titre']}/${data[0]['couverture_livre']}"),
-                              width: 400,
-                              height: 700,
                             ),
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width / 1.8,
                             padding: EdgeInsets.all(15.0),
                             decoration: new BoxDecoration(
-                                border: new Border.all(width: 4.0 ,color: Colors.transparent), //color is transparent so that it does not blend with the actual color specified
-                                borderRadius: const BorderRadius.all(const Radius.circular(30.0)),
-                                color: new Color.fromRGBO(255, 255, 255, 0.5) // Specifies the background color and the opacity
+                              border: new Border.all(width: 4.0 ,color: Colors.transparent), //color is transparent so that it does not blend with the actual color specified
+                              borderRadius: const BorderRadius.all(const Radius.circular(30.0)),
+                              color: new Color.fromRGBO(255, 255, 255, 0.6), // Specifies the background color and the opacity
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3), // changes position of shadow
+                                ),
+                              ],
                             ),
                             child: Column(
                               children: [
                                 Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Text(
-                                    '${data[0]['titre']}',
+                                    'Titre: ${data[0]['titre'].replaceAll('_',' ')}',
                                     textAlign: TextAlign.left,
                                     textDirection: TextDirection.rtl,
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 35,
+                                      fontSize: 25,
                                     ),
                                   ),
                                 ),
@@ -89,29 +96,29 @@ class _ResumeViewState extends State<ResumeView> {
                                     children: <Widget>[
                                       Container(
                                         child: TabBar(
-                                          labelStyle: TextStyle(
-                                            fontSize: 22.0,
-                                            fontFamily: 'Family Name',
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                          indicatorColor: Colors.blue,
-                                          unselectedLabelColor: Colors.white,
-                                          labelColor: Colors.blue,
+                                            labelStyle: TextStyle(
+                                              fontSize: 22.0,
+                                              fontFamily: 'Family Name',
+                                              fontWeight: FontWeight.w900,
+                                            ),
+                                            indicatorColor: Colors.blue,
+                                            unselectedLabelColor: Colors.black38,
+                                            labelColor: Colors.blue,
 
-                                          tabs: [
-                                            Tab(
-                                              text: "Resume",
-                                              //icon: ,
-                                            ),
-                                            Tab(
+                                            tabs: [
+                                              Tab(
+                                                text: "Resume",
+                                                //icon: Icon(Icons.book_rounded),
+                                              ),
+                                              Tab(
                                                 text: "Biographie de l'auteur",
-                                            ),
-                                          ]
+                                              ),
+                                            ]
                                         ),
                                       ),
                                       Container(
                                         //Add this to give height
-                                        height: MediaQuery.of(context).size.height /2.5,
+                                        height: MediaQuery.of(context).size.height /2.9,
                                         child: TabBarView(
                                             children: [
                                               SingleChildScrollView(
@@ -123,7 +130,7 @@ class _ResumeViewState extends State<ResumeView> {
                                                       style: TextStyle(
                                                         color: Colors.black,
                                                         fontWeight: FontWeight.bold,
-                                                        fontSize: 25,
+                                                        fontSize: 21,
                                                       ),
                                                     ),
                                                   ],
@@ -138,7 +145,7 @@ class _ResumeViewState extends State<ResumeView> {
                                                       style: TextStyle(
                                                         color: Colors.black,
                                                         fontWeight: FontWeight.bold,
-                                                        fontSize: 25,
+                                                        fontSize: 21,
                                                       ),
                                                     ),
                                                   ],
@@ -162,8 +169,15 @@ class _ResumeViewState extends State<ResumeView> {
                                       onPressed: () {
                                         _showDialogBuy(context);
                                       },
-                                      icon: Icon(Icons.shopping_cart, size: 18),
-                                      label: Text('Acheter'),
+                                      icon: Icon(Icons.shopping_cart, size: 35),
+                                      label: Text(
+                                        'Acheter',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 21,
+                                        ),
+                                      ),
                                     ),
                                     SizedBox(width: 20,),
                                     ElevatedButton.icon(
@@ -173,8 +187,15 @@ class _ResumeViewState extends State<ResumeView> {
                                       onPressed: () {
                                         _showDialogReceive(context);
                                       },
-                                      icon: Icon(Icons.send, size: 18),
-                                      label: Text('Recevoir un extraire'),
+                                      icon: Icon(Icons.share, size: 35),
+                                      label: Text(
+                                        'Recevoir',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 21,
+                                        ),
+                                      ),
                                     ),
                                     SizedBox(width: 20,),
                                     ElevatedButton.icon(
@@ -184,8 +205,15 @@ class _ResumeViewState extends State<ResumeView> {
                                       onPressed: () {
                                         Navigator.pushNamed(context, '/lecture', arguments: data[0]['id']);
                                       },
-                                      icon: Icon(Icons.book_rounded, size: 18),
-                                      label: Text('Lire'),
+                                      icon: Icon(Icons.book_rounded, size: 35),
+                                      label: Text(
+                                        'Lire',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 21,
+                                        ),
+                                      ),
                                     ),
                                     SizedBox(width: 20,),
                                     ElevatedButton.icon(
@@ -195,8 +223,15 @@ class _ResumeViewState extends State<ResumeView> {
                                       onPressed: () {
                                         //Navigator.pushNamed(context, '/lecture');
                                       },
-                                      icon: Icon(Icons.audiotrack, size: 18),
-                                      label: Text('Ecouter'),
+                                      icon: Icon(Icons.audiotrack, size: 35),
+                                      label: Text(
+                                        'Ecouter',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 21,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),

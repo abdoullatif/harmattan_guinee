@@ -79,7 +79,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       onPressed: () {
                         //Navigator.pushNamed(context, '/livreAudio');
-                        Navigator.pushNamed(context, '/themes', arguments: 'Livres audio');
+                        Navigator.pushNamed(context, '/bibliotequeAudio', arguments: 'Livres audio');
                       },
                       child: Image.asset("assets/home/livre_audio.png"),
                     ),
