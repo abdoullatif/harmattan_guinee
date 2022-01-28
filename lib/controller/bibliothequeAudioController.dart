@@ -1,3 +1,4 @@
+import 'package:Harmattan_guinee/model/audio.dart';
 import 'package:Harmattan_guinee/model/livre.dart';
 import 'package:Harmattan_guinee/views/bibliothequeAudioView.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +12,10 @@ class BibliothequeAudioController extends StatelessWidget {
   Widget build(BuildContext context) {
     //Traitement biblioteque Audio
     final parametre = ModalRoute.of(context).settings.arguments;
-    var livreaudio = Livre.SelectWhereTypeTheme(int.tryParse('2') ?? 00,parametre);
+    var livreAudio = Audio.SelectAudio();
 
     return Scaffold(
-      body: BibliotequeAudioView(livreaudio),
+      body: BibliotequeAudioView(livreAudio),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           //print('exit');
