@@ -16,65 +16,92 @@ class BibliotequeAudioView extends StatefulWidget {
 }
 
 class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
+
+  //
+  List queryAudio;
+  List queryAudioSaved;
+  bool exist=false;
+
+  //Fonction
+  Future<List<Map<String, dynamic>>> getAudio () async {
+    if(!exist) {
+      queryAudio = await widget.livreAudio;
+      queryAudioSaved = queryAudio;
+      exist = true;
+    }
+    return queryAudio;
+  }
+
   @override
   Widget build(BuildContext context) {
     //form
     final formGlobalKey = GlobalKey<FormState>();
 
-    return FutureBuilder(
-      future: widget.livreAudio,
-      builder: (context, AsyncSnapshot snapshot) {
-
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator();
-      } else if (snapshot.connectionState == ConnectionState.done) {
-
-        if (snapshot.hasError) {
-          return const Text('Error');
-        } else if (snapshot.hasData) {
-          //
-          List<Map<String, dynamic>> data = snapshot.data;
-          int n = data.length;
-
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1),
-                    BlendMode.dstATop),
-                image: AssetImage("assets/background/planche.png"),
-                fit: BoxFit.cover,
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1),
+              BlendMode.dstATop),
+          image: AssetImage("assets/background/planche.png"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(left: 30, right: 30, top: 40),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                'Livre audio',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 40,
+                ),
               ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(left: 30, right: 30, top: 40),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: formGlobalKey,
-                  child: Column(
-                    children: [
-                      Text(
-                        'Livre audio',
-                        style: TextStyle(
-                          color: Colors.grey[800],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 40,
-                        ),
-                      ),
-                      SizedBox(height: 20,),
-                      SizedBox(
-                        //height: ,
-                        width: 500,
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                            icon: const Icon(Icons.search),
-                            hintText: 'Entrer votre votre recherche',
-                            labelText: 'Recherche',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10,),
-                      SizedBox(
+              SizedBox(height: 20,),
+              SizedBox(
+                //height: ,
+                width: 500,
+                child: TextField(
+                  decoration: const InputDecoration(
+                    icon: const Icon(Icons.search),
+                    hintText: 'Entrer votre votre recherche',
+                    labelText: 'Recherche',
+                  ),
+                  onChanged: (text) {
+                    //
+                    text = text.toLowerCase();
+                    queryAudio = queryAudioSaved;
+                    queryAudio = queryAudio.where((element) {
+
+                      var titre = element["titre"].toLowerCase();
+
+                      return titre.contains(text);
+
+                    }).toList();
+                    //
+                  },
+                ),
+              ),
+              SizedBox(height: 10,),
+              FutureBuilder(
+                future: getAudio(),
+                builder: (context, AsyncSnapshot snapshot) {
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+
+                    if (snapshot.hasError) {
+                      return const Text('Error');
+                    } else if (snapshot.hasData) {
+                      //
+                      List<Map<String, dynamic>> data = snapshot.data;
+                      int n = data.length;
+
+                      return SizedBox(
                         height: 570,
                         child: ListView.builder(
                           itemCount: n,
@@ -147,24 +174,24 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                             );
                           },
                         ),
-                      )
-                    ],
-                  ),
-                ),
+                      );
+
+                    } else {
+                      return const Text('Empty data');
+                    }
+
+                  } else {
+                    return Text('State: ${snapshot.connectionState}');
+                  }
+
+                },
               ),
-            ),
-          );
-
-        } else {
-          return const Text('Empty data');
-        }
-
-      } else {
-        return Text('State: ${snapshot.connectionState}');
-      }
-
-      },
+            ],
+          ),
+        ),
+      ),
     );
+
   }
 
   //

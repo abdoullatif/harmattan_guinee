@@ -10,7 +10,7 @@ class LectureController extends StatelessWidget {
   Widget build(BuildContext context) {
     //Traitement de la lecture, du pdf
     final livre_id = ModalRoute.of(context).settings.arguments;
-    var page = Pages.SelectWherePageLivre(int.parse(livre_id));
+    var page = Pages.SelectWherePageLivreId(int.parse(livre_id));
 
     return Scaffold(
       body: LectureView(page),

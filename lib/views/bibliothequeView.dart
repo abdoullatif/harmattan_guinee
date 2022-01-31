@@ -41,6 +41,8 @@ class _BibliothequeViewState extends State<BibliothequeView> {
 
               List<Map<String, dynamic>> data = snapshot.data;
 
+              //print(data);
+
               for(int i = 0; i < data.length; i++){
                 //start
                 couvertureLivre.add(
@@ -64,7 +66,8 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                 "Title2",
               ];
 
-              return Container(
+              return data.isNotEmpty ?
+                Container(
                 height: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -92,7 +95,41 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                   ),
 
                 ),
+              ) :
+              Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1),
+                        BlendMode.dstATop),
+                    image: AssetImage("assets/background/planche.png"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Oups, il n\'y a pas de livre dans cette thématique, Désolé !',
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40,
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      SizedBox(
+                        //height: 300,
+                        //width: 80,
+                        child: Image.asset("assets/gif/book.gif"),
+                      ),
+                    ],
+                  ),
+                ),
               );
+
             } else {
               return const Text('Empty data');
             }

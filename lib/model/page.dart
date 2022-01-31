@@ -21,6 +21,9 @@ class Pages {
   static Future<List<Map<String, dynamic>>> SelectWhere(int livre_id) async => await _db.rawQuery('SELECT * FROM page WHERE livre_id = $livre_id');
 
   //Select where id
+  static Future<List<Map<String, dynamic>>> SelectWherePageLivreId(int livre_id) async => await _db.rawQuery('SELECT * FROM livre,page WHERE livre.id = $livre_id and livre.id = page.livre_id');
+
+  //Select where id page livre audio
   static Future<List<Map<String, dynamic>>> SelectWherePageLivre(int livre_id) async => await _db.rawQuery('SELECT * FROM livre,page,audio WHERE livre.id = $livre_id and livre.id = page.livre_id or livre.id = audio.livre_id');
 
 }

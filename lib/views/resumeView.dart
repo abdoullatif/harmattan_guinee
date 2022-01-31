@@ -268,7 +268,7 @@ class _ResumeViewState extends State<ResumeView> {
                                               ),
                                               onPressed: () {
                                                 //Navigator.pushNamed(context, '/lecture');
-                                                _showAudioPlayer(context,data[0]['titre'],AudioExist[0]['contenue_audio']);
+                                                _showAudioPlayer(context,data[0]['titre'], AudioExist[0]['contenue_audio']);
                                               },
                                               icon: Icon(Icons.volume_mute_rounded, size: 35),
                                               label: Text(
@@ -342,7 +342,7 @@ class _ResumeViewState extends State<ResumeView> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Text('Entrer votre numero de telephone'),
+                    //Text('Entrer votre numero de telephone'),
                     SizedBox(
                       //height: ,
                       //width: 500,
@@ -350,7 +350,7 @@ class _ResumeViewState extends State<ResumeView> {
                         decoration: const InputDecoration(
                           icon: const Icon(Icons.phone_android),
                           hintText: 'Numero de telephone',
-                          labelText: 'Numero de telephone',
+                          labelText: 'Entrer votre numero de telephone',
                         ),
                       ),
                     ),
