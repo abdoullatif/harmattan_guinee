@@ -82,7 +82,7 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                     child: CoverFlow(
                       images: couvertureLivre,
                       titles: titre,
-                      textStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,backgroundColor: Colors.white,height: 10,),
+                      textStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,backgroundColor: Colors.white,height: 15,),
                       displayOnlyCenterTitle: true,
                       onCenterItemSelected: (index) {
                         //print('Selected Item\'s index: $index');
@@ -123,7 +123,7 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                       SizedBox(
                         //height: 300,
                         //width: 80,
-                        child: Image.asset("assets/gif/book.gif"),
+                        child: Image.asset("assets/gif/book.gif"), //stuck //book
                       ),
                     ],
                   ),

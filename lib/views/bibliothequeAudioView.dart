@@ -37,156 +37,161 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
     //form
     final formGlobalKey = GlobalKey<FormState>();
 
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1),
-              BlendMode.dstATop),
-          image: AssetImage("assets/background/planche.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(left: 30, right: 30, top: 40),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Text(
-                'Livre audio',
-                style: TextStyle(
-                  color: Colors.grey[800],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 40,
-                ),
-              ),
-              SizedBox(height: 20,),
-              SizedBox(
-                //height: ,
-                width: 500,
-                child: TextField(
-                  decoration: const InputDecoration(
-                    icon: const Icon(Icons.search),
-                    hintText: 'Entrer votre votre recherche',
-                    labelText: 'Recherche',
+    return Center(
+      child: Container(/*
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1),
+                BlendMode.dstATop),
+            image: AssetImage("assets/background/planche.png"),
+            fit: BoxFit.cover,
+          ),
+        ),*/
+        child: Padding(
+          padding: EdgeInsets.only(left: 30, right: 30, top: 40),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  'Livre audio',
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 40,
                   ),
-                  onChanged: (text) {
-                    //
-                    text = text.toLowerCase();
-                    queryAudio = queryAudioSaved;
-                    queryAudio = queryAudio.where((element) {
-
-                      var titre = element["titre"].toLowerCase();
-
-                      return titre.contains(text);
-
-                    }).toList();
-                    //
-                  },
                 ),
-              ),
-              SizedBox(height: 10,),
-              FutureBuilder(
-                future: getAudio(),
-                builder: (context, AsyncSnapshot snapshot) {
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.connectionState == ConnectionState.done) {
-
-                    if (snapshot.hasError) {
-                      return const Text('Error');
-                    } else if (snapshot.hasData) {
+                SizedBox(height: 20,),
+                SizedBox(
+                  //height: ,
+                  width: 500,
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      icon: const Icon(Icons.search),
+                      hintText: 'Entrer votre votre recherche',
+                      labelText: 'Recherche',
+                    ),
+                    onChanged: (text) {
                       //
-                      List<Map<String, dynamic>> data = snapshot.data;
-                      int n = data.length;
+                      setState(() {
+                        text = text.toLowerCase();
+                        queryAudio = queryAudioSaved;
+                        queryAudio = queryAudio.where((element) {
 
-                      return SizedBox(
-                        height: 570,
-                        child: ListView.builder(
-                          itemCount: n,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              elevation: 5.0,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 160, // MediaQuery.of(context).size.width / 6
-                                    child: Image.file(
-                                      File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[index]['titre']}/${data[index]['couverture_livre']}"),
-                                      //width: 200,
-                                      height: 200,
+                          var titre = element["titre"].replaceAll('_',' ').toLowerCase();
+
+                          //print(titre.contains(text));
+                          return titre.contains(text);
+
+                        }).toList();
+                      });
+                      //
+                    },
+                  ),
+                ),
+                SizedBox(height: 10,),
+                FutureBuilder(
+                  future: getAudio(),
+                  builder: (context, AsyncSnapshot snapshot) {
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+
+                      if (snapshot.hasError) {
+                        return const Text('Error');
+                      } else if (snapshot.hasData) {
+                        //
+                        List<Map<String, dynamic>> data = snapshot.data;
+                        int n = data.length;
+
+                        return SizedBox(
+                          height: 570,
+                          child: ListView.builder(
+                            itemCount: n,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                elevation: 5.0,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 160, // MediaQuery.of(context).size.width / 6
+                                      child: Image.file(
+                                        File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[index]['titre']}/${data[index]['couverture_livre']}"),
+                                        //width: 200,
+                                        height: 200,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(width: 20,),
-                                  Container(
-                                    width: 850, // MediaQuery.of(context).size.width / 2
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          "${data[index]['titre'].replaceAll('_',' ')}",
-                                          textAlign: TextAlign.left,
-                                          //textDirection: TextDirection.rtl,
+                                    SizedBox(width: 20,),
+                                    Container(
+                                      width: 850, // MediaQuery.of(context).size.width / 2
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "${data[index]['titre'].replaceAll('_',' ')}",
+                                            textAlign: TextAlign.left,
+                                            //textDirection: TextDirection.rtl,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 21,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${data[index]['resume_livre']} ...",
+                                            maxLines: 5,
+                                            textAlign: TextAlign.left,
+                                            textDirection: TextDirection.rtl,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              //fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 20,),
+                                    Container(
+                                      width: 150, //MediaQuery.of(context).size.width / 8
+                                      child: ElevatedButton.icon(
+                                        style: ButtonStyle(
+                                          //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                        ),
+                                        onPressed: () {
+                                          //Navigator.pushNamed(context, '/lecture');
+                                          _showAudioPlayer(context,data[0]['titre'],data[0]['contenue_audio']);
+                                        },
+                                        icon: Icon(Icons.volume_mute_rounded, size: 35),
+                                        label: Text(
+                                          'Ecouter',
                                           style: TextStyle(
-                                            color: Colors.black,
+                                            color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 21,
                                           ),
                                         ),
-                                        Text(
-                                          "${data[index]['resume_livre']} ...",
-                                          maxLines: 5,
-                                          textAlign: TextAlign.left,
-                                          textDirection: TextDirection.rtl,
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            //fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(width: 20,),
-                                  Container(
-                                    width: 150, //MediaQuery.of(context).size.width / 8
-                                    child: ElevatedButton.icon(
-                                      style: ButtonStyle(
-                                        //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                                       ),
-                                      onPressed: () {
-                                        //Navigator.pushNamed(context, '/lecture');
-                                        _showAudioPlayer(context,data[0]['titre'],data[0]['contenue_audio']);
-                                      },
-                                      icon: Icon(Icons.volume_mute_rounded, size: 35),
-                                      label: Text(
-                                        'Ecouter',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 21,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      );
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+
+                      } else {
+                        return const Text('Empty data');
+                      }
 
                     } else {
-                      return const Text('Empty data');
+                      return Text('State: ${snapshot.connectionState}');
                     }
 
-                  } else {
-                    return Text('State: ${snapshot.connectionState}');
-                  }
-
-                },
-              ),
-            ],
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

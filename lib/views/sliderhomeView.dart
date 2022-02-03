@@ -13,8 +13,8 @@ class _SliderhomeViewState extends State<SliderhomeView> {
 
   //image slider
   final List<String> imgList = [
-    'assets/slider/banner1.png',
-    'assets/slider/banner2.png',
+    //'assets/slider/banner1.png',
+    //'assets/slider/banner2.png',
     'assets/slider/banner3.png',
   ];
 

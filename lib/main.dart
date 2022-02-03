@@ -5,9 +5,11 @@ import 'package:Harmattan_guinee/controller/resumeController.dart';
 import 'package:Harmattan_guinee/controller/slidehomeController.dart';
 import 'package:Harmattan_guinee/controller/themeController.dart';
 import 'package:Harmattan_guinee/synchro/synchro_by_sooba_inspire_by_alimou_washington.dart';
+import 'package:Harmattan_guinee/utils/config.dart';
 import 'package:Harmattan_guinee/utils/parametre.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'controller/bibliothequeAudioController.dart';
 import 'controller/homeController.dart';
 import 'databases/sqflite_db.dart';
@@ -28,9 +30,11 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   //bad certificat
   HttpOverrides.global = new MyHttpOverrides();
+  var path = Directory.current.path;
   //Init db
   await DB.init();
   await Parametre.createFolder();
+  //Hive.init(path);
   //DB local parametre
   List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
   if(tab.isNotEmpty){
@@ -46,17 +50,43 @@ void main() async{
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+
+
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    currentTheme.addListener(() {
+      print('change');
+      setState(() {
+        //
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Harmattan Guinee',
-      theme: ThemeData(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: currentTheme.currentTheme(),
+      /*
+      ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      */
       //home: MyHomePage(title: 'Harmattan guinee app'),
       initialRoute: '/',
       routes: {
