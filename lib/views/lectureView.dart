@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:Harmattan_guinee/utils/config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -103,17 +104,34 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
   }
 
 
-  final Completer<PDFViewController> _controller =
-  Completer<PDFViewController>();
-  int pages = 0;
-  int currentPage = 0;
   bool isReady = false;
   String errorMessage = '';
+  //
+  bool light = box.get('currentTheme');
 
+  //fonction
+  setLightorDark () {
+    setState(() {
+      //
+      print(light);
+      light = !light;
+      //box.put('currentTheme', light);
+      print(light);
+    });
+  }
 
 
   @override
   Widget build(BuildContext context) {
+    //
+    final Completer<PDFViewController> _controller =
+    Completer<PDFViewController>();
+    int pages = 0;
+    int currentPage = 0;
+
+    //
+
+
     return FutureBuilder(
       future: widget.page,
       builder: (context, AsyncSnapshot snapshot) {
@@ -140,6 +158,7 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
                 pageSnap: true,
                 defaultPage: currentPage,
                 fitPolicy: FitPolicy.BOTH,
+                nightMode: light,
                 preventLinkNavigation:
                 false, // if set to true the link is handled in flutter
                 onRender: (_pages) {
@@ -180,7 +199,22 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
                   : Container()
                   : Center(
                 child: Text(errorMessage),
-              )
+              ),
+              Positioned(
+                bottom: 10,
+                right: 0,
+                //bottom: 2,
+                child: FloatingActionButton.extended(
+                  label: Text('Changer de mode'),
+                  icon: Icon(Icons.brightness_6_rounded, size: 35,),
+                  backgroundColor: Colors.black38,
+                  onPressed: (){
+                    //
+                    setLightorDark();
+                  },
+                  heroTag: null,
+                ),
+              ),
             ],
           );
 

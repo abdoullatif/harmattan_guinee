@@ -26,6 +26,7 @@ class _SliderhomeViewState extends State<SliderhomeView> {
         height: MediaQuery.of(context).size.height,
         viewportFraction: 1.0,
         enlargeCenterPage: false,
+        autoPlayInterval: const Duration(seconds: 60),
         //aspectRatio: 16/9,
       ),
       items: imgList.map((item) => Container(

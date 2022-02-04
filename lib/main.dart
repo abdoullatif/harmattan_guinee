@@ -10,6 +10,7 @@ import 'package:Harmattan_guinee/utils/parametre.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'controller/bibliothequeAudioController.dart';
 import 'controller/homeController.dart';
 import 'databases/sqflite_db.dart';
@@ -30,11 +31,12 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   //bad certificat
   HttpOverrides.global = new MyHttpOverrides();
-  var path = Directory.current.path;
+  //var path = Directory.current.path;
   //Init db
   await DB.init();
   await Parametre.createFolder();
-  //Hive.init(path);
+  await Hive.initFlutter();
+  box = await Hive.openBox('harmattan_guinee');
   //DB local parametre
   List<Map<String, dynamic>> tab = await DB.querySelect("parametre");
   if(tab.isNotEmpty){
@@ -52,9 +54,6 @@ void main() async{
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
-
-
-
   @override
   State<MyApp> createState() => _MyAppState();
 }

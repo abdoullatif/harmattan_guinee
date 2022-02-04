@@ -14,15 +14,17 @@ class LectureController extends StatelessWidget {
 
     return Scaffold(
       body: LectureView(page),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //print('exit');
-          Navigator.pop(context);
-        },
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Quitter'),
+        icon: Icon(Icons.exit_to_app, size: 35,),
         tooltip: 'Quitter',
         backgroundColor: Colors.red,
-        child: Icon(Icons.exit_to_app, size: 35,),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        heroTag: null,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
