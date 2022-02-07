@@ -7,6 +7,7 @@ import 'package:Harmattan_guinee/controller/themeController.dart';
 import 'package:Harmattan_guinee/synchro/synchro_by_sooba_inspire_by_alimou_washington.dart';
 import 'package:Harmattan_guinee/utils/config.dart';
 import 'package:Harmattan_guinee/utils/parametre.dart';
+import 'package:Harmattan_guinee/utils/styleTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -77,8 +78,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Harmattan Guinee',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      theme: buildLightTheme(), //ThemeData.light()
+      darkTheme: buildDarkTheme(), //ThemeData.dark()
       themeMode: currentTheme.currentTheme(),
       /*
       ThemeData(

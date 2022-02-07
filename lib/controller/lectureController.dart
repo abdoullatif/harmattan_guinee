@@ -15,8 +15,8 @@ class LectureController extends StatelessWidget {
     return Scaffold(
       body: LectureView(page),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text('Quitter'),
-        icon: Icon(Icons.exit_to_app, size: 35,),
+        label: Text('Retour', style: Theme.of(context).textTheme.button,),
+        icon: Icon(Icons.exit_to_app, size: 35, color: Theme.of(context).buttonColor,),
         tooltip: 'Quitter',
         backgroundColor: Colors.red,
         onPressed: () {

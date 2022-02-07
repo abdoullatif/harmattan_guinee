@@ -113,11 +113,7 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                     children: [
                       Text(
                         'Oups, il n\'y a pas de livre dans cette thématique, Désolé !',
-                        style: TextStyle(
-                          color: Colors.grey[800],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 40,
-                        ),
+                        style: Theme.of(context).textTheme.headline3,
                       ),
                       SizedBox(height: 10,),
                       SizedBox(

@@ -7,6 +7,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -190,7 +192,7 @@ class _ResumeViewState extends State<ResumeView> {
                                         //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                                       ),
                                       onPressed: () {
-                                        _showDialogReceive(context);
+                                        _showDialogReceive(context,data[0]['titre'],data[0]['extraire']);
                                       },
                                       icon: Icon(Icons.share, size: 35),
                                       label: Text(
@@ -380,47 +382,98 @@ class _ResumeViewState extends State<ResumeView> {
   }
 
   //AlerteDialog Recevoir un extraire
-  _showDialogReceive(BuildContext context) {
+  _showDialogReceive(BuildContext context, String titre, String extraire) {
+    //
+    final _formKey = GlobalKey<FormState>();
+
+    TextEditingController _email = TextEditingController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        //
         return Container(
           child: AlertDialog(
             title: Text('Recevoir un extraire'),
             content: Container(
               width: 700,
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    //Text('Entrer votre numero addresse email'),
-                    SizedBox(
-                      //height: ,
-                      //width: 500,
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          icon: const Icon(Icons.email),
-                          hintText: 'email',
-                          labelText: 'Adresse E-mail',
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      //Text('Entrer votre numero addresse email'),
+                      SizedBox(
+                        //height: ,
+                        //width: 500,
+                        child: TextFormField(
+                          controller: _email,
+                          decoration: const InputDecoration(
+                            icon: const Icon(Icons.email),
+                            hintText: 'email',
+                            labelText: 'Adresse E-mail',
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Veuiller entrer une adresse mail valide';
+                            }
+                            return null;
+                          },
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10,),
-                  ],
+                      SizedBox(height: 10,),
+                    ],
+                  ),
                 ),
               ),
             ),
             actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
+              ElevatedButton(
+                onPressed: () async{
+                  if(_formKey.currentState.validate()) {
+                    //
+                    final Email email = Email(
+                      body: 'Voici-ci join un extraire en pdf du livre ${titre.replaceAll('_', ' ')} ',
+                      subject: 'Extraire du livre ${titre.replaceAll('_', ' ')}',
+                      recipients: [_email.text],
+                      //cc: ['cc@example.com'],
+                      //bcc: ['bcc@example.com'],
+                      attachmentPaths: ['/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/$titre/$extraire'],
+                      isHTML: false,
+                    );
+
+                    String platformResponse;
+
+                    try {
+                      await FlutterEmailSender.send(email);
+                      platformResponse = 'success';
+
+                      Fluttertoast.showToast(
+                          msg: "Email envoyer avec succes !", //Présence enregistrée,
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 5,
+                          backgroundColor: Colors.green,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+
+                    } catch (error) {
+                      platformResponse = error.toString();
+                    }
+
+                    Navigator.of(context).pop();
+
+                  }
+
                 },
-                child: Text('Recevoir', style: TextStyle(color: Colors.black),),
+                child: Text('Recevoir l\'extraire ', style: Theme.of(context).textTheme.button,),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Annuler', style: TextStyle(color: Colors.black),),
+                child: Text('Annuler', style: Theme.of(context).textTheme.button,),
               ),
             ],
           ),

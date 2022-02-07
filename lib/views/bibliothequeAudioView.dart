@@ -55,11 +55,7 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
               children: [
                 Text(
                   'Livre audio',
-                  style: TextStyle(
-                    color: Colors.grey[800],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 40,
-                  ),
+                  style: Theme.of(context).textTheme.headline2,
                 ),
                 SizedBox(height: 20,),
                 SizedBox(
@@ -131,22 +127,14 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                                             "${data[index]['titre'].replaceAll('_',' ')}",
                                             textAlign: TextAlign.left,
                                             //textDirection: TextDirection.rtl,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 21,
-                                            ),
+                                            style: Theme.of(context).textTheme.headline6,
                                           ),
                                           Text(
                                             "${data[index]['resume_livre']} ...",
                                             maxLines: 5,
                                             textAlign: TextAlign.left,
                                             textDirection: TextDirection.rtl,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              //fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
+                                            style: Theme.of(context).textTheme.subtitle2,
                                           )
                                         ],
                                       ),

@@ -48,11 +48,7 @@ class _ThemeViewState extends State<ThemeView> {
             children: [
               Text(
                 'Thématique',
-                style: TextStyle(
-                  color: Colors.grey[800],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 40,
-                ),
+                style: Theme.of(context).textTheme.headline2,
               ),
               SizedBox(height: 10,),
               SizedBox(
