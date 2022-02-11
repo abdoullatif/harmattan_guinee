@@ -43,6 +43,8 @@ dependencies:
   audioplayers: ^0.20.1
   hive: ^2.0.5
   hive_flutter: ^1.1.0
+  lottie: ^1.2.1
+
   flutter_email_sender: ^5.0.2
   #image: ^3.1.1
 
@@ -72,6 +74,7 @@ flutter:
     - assets/gif/
     - assets/home/
     - assets/logo/
+    - assets/lotties/
     - assets/background/
     - assets/slider/
   #   - images/a_dot_burr.jpeg

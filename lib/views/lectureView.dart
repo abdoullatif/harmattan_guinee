@@ -79,7 +79,7 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
       await file.writeAsBytes(bytes, flush: true);
       completer.complete(file);
     } catch (e) {
-      throw Exception('Error parsing asset file!');
+      Exception('Error parsing asset file!');
     }
 
     return completer.future;
@@ -158,7 +158,7 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
                 pageSnap: true,
                 defaultPage: currentPage,
                 fitPolicy: FitPolicy.BOTH,
-                nightMode: light,
+                //nightMode: light,
                 preventLinkNavigation:
                 false, // if set to true the link is handled in flutter
                 onRender: (_pages) {
@@ -211,6 +211,7 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
                   onPressed: (){
                     //
                     setLightorDark();
+                    // = true;
                   },
                   heroTag: null,
                 ),

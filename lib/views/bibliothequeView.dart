@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:coverflow/coverflow.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:perspective_pageview/perspective_pageview.dart';
 import 'package:horizontal_card_pager/horizontal_card_pager.dart';
@@ -107,21 +108,25 @@ class _BibliothequeViewState extends State<BibliothequeView> {
                   ),
                 ),
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Oups, il n\'y a pas de livre dans cette thématique, Désolé !',
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
-                      SizedBox(height: 10,),
-                      SizedBox(
-                        //height: 300,
-                        //width: 80,
-                        child: Image.asset("assets/gif/book.gif"), //stuck //book
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Oups, il n\'y a pas de livre dans cette thématique, Désolé !',
+                          style: Theme.of(context).textTheme.headline3,
+                        ),
+                        SizedBox(height: 10,),
+                        Lottie.asset(
+                          'assets/lotties/astronaut.json',
+                          width: 500,
+                          height: 500,
+                          fit: BoxFit.fill,
+                        ),
+
+                      ],
+                    ),
                   ),
                 ),
               );
