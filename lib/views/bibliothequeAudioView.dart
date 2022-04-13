@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:volume_control/volume_control.dart';
 
 
 class BibliotequeAudioView extends StatefulWidget {
@@ -34,8 +34,6 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
 
   @override
   Widget build(BuildContext context) {
-    //form
-    final formGlobalKey = GlobalKey<FormState>();
 
     return Center(
       child: Container(/*
@@ -102,7 +100,7 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                         int n = data.length;
 
                         return SizedBox(
-                          height: 570,
+                          height: MediaQuery.of(context).size.height / 1.4,
                           child: ListView.builder(
                             itemCount: n,
                             itemBuilder: (context, index) {
@@ -120,7 +118,7 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                                     ),
                                     SizedBox(width: 20,),
                                     Container(
-                                      width: 850, // MediaQuery.of(context).size.width / 2
+                                      width: MediaQuery.of(context).size.width / 1.6, // MediaQuery.of(context).size.width / 2
                                       child: Column(
                                         children: [
                                           Text(
@@ -141,14 +139,14 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                                     ),
                                     SizedBox(width: 20,),
                                     Container(
-                                      width: 150, //MediaQuery.of(context).size.width / 8
+                                      width: MediaQuery.of(context).size.width / 8, //MediaQuery.of(context).size.width / 8
                                       child: ElevatedButton.icon(
                                         style: ButtonStyle(
                                           //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                                         ),
                                         onPressed: () {
                                           //Navigator.pushNamed(context, '/lecture');
-                                          _showAudioPlayer(context,data[0]['titre'],data[0]['contenue_audio']);
+                                          _showAudioPlayer(context,data[index]['titre'],data[index]['contenue_audio'], data[index]['couverture_livre']);
                                         },
                                         icon: Icon(Icons.volume_mute_rounded, size: 35),
                                         label: Text(
@@ -160,7 +158,7 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                                           ),
                                         ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               );
@@ -191,18 +189,36 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
   StateSetter _setState;
 
   //AlerteDialog Audio Player
-  _showAudioPlayer(BuildContext context, String folder, String audio) {
+  _showAudioPlayer(BuildContext context, String folder, String audio, String couverture) {
 
     //
+    double _val = 0.5; //
+    Timer timer;
+
+    //init volume_control plugin
+    Future<void> initVolumeState() async {
+      if (!mounted) return;
+
+      //read the current volume
+      _val = await VolumeControl.volume;
+      setState(() {
+      });
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      initVolumeState();
+    }
 
     int maxduration = 100;
     int currentpos = 0;
     String currentpostlabel = "00:00";
-    String audioasset = "assets/audio/red-music.mp3";
+    //String audioasset = "assets/audio/red-music.mp3";
     final audiofile = File('/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/$folder/$audio');
     bool isplaying = false;
     bool audioplayed = false;
-    Uint8List audiobytes; // late
+    //Uint8List audiobytes; // late
 
     AudioPlayer player = AudioPlayer();
 
@@ -212,7 +228,7 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
 
         return Container(
           child: AlertDialog(
-            title: Text('Lecture'),
+            title: Text('Lecture audio du livre'),
             content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState){
                 //
@@ -265,6 +281,14 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                             child: Column(
                               children: [
 
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height / 3,
+                                  child: Image.file(File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/$folder/$couverture")),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+
                                 Container(
                                   child: Text(currentpostlabel, style: TextStyle(fontSize: 25),),
                                 ),
@@ -273,7 +297,7 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                                     child: Slider(
                                       value: double.parse(currentpos.toString()),
                                       min: 0,
-                                      max: double.parse(maxduration.toString()),
+                                      max: double.parse(maxduration.toString()) + 1.0,
                                       divisions: maxduration,
                                       label: currentpostlabel,
                                       onChanged: (double value) async {
@@ -346,9 +370,37 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                                           icon: Icon(Icons.stop),
                                           label:Text("Stop")
                                       ),
+
                                     ],
                                   ),
-                                )
+                                ),
+
+                                SizedBox(
+                                  height: 10,
+                                ),
+
+                                Text(
+                                  "Volume",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                  ),
+                                ),
+
+                                //Volume
+                                Slider(value:_val,min:0,max:1,divisions: 100,onChanged:(val){
+                                  _val = val;
+                                  setState(() {});
+                                  if (timer!=null){
+                                    timer?.cancel();
+                                  }
+
+                                  //use timer for the smoother sliding
+                                  timer = Timer(Duration(milliseconds: 200), (){VolumeControl.setVolume(val);});
+
+                                  print("val:$val");
+                                }),
 
                               ],
                             )

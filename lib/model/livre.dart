@@ -29,7 +29,7 @@ class Livre {
   static Future<List<Map<String, dynamic>>> Select() async => await _db.rawQuery('SELECT * FROM livre');
 
   //Select where id
-  static Future<List<Map<String, dynamic>>> SelectWhere(int id) async => await _db.rawQuery('SELECT * FROM livre WHERE id = $id');
+  static Future<List<Map<String, dynamic>>> SelectWhere(int id) async => await _db.rawQuery('SELECT * FROM page WHERE livre_id = $id');
 
   //Select where titre
   static Future<List<Map<String, dynamic>>> SelectWhereTitre(String titre) async => await _db.rawQuery('SELECT * FROM livre WHERE titre = "' + titre + '"');

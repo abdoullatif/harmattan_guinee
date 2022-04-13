@@ -81,6 +81,7 @@ class DB{
     CREATE TABLE audio(
     id TEXT PRIMARY KEY,
     contenue_audio TEXT,
+    langue_id TEXT,
     livre_id TEXT,
     flagtransmis TEXT)
     ''');

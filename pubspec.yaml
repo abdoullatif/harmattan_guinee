@@ -44,6 +44,7 @@ dependencies:
   hive: ^2.0.5
   hive_flutter: ^1.1.0
   lottie: ^1.2.1
+  volume_control: ^0.1.5
 
   flutter_email_sender: ^5.0.2
   #image: ^3.1.1

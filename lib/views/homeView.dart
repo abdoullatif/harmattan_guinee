@@ -78,8 +78,33 @@ class _HomeViewState extends State<HomeView> {
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                       onPressed: () {
+
                         //Navigator.pushNamed(context, '/livreAudio');
                         Navigator.pushNamed(context, '/bibliotequeAudio', arguments: 'Livres audio');
+
+                        /*
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Align(
+                                alignment: Alignment.center,
+                                child: SizedBox(
+                                  //height: 50.0,
+                                  child: Text(
+                                    "SELECTIONNER VOTRE LANGUE",
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              content: setupAlertDialogLangue(context),
+                            );
+                          },
+                        );*/
+
                       },
                       child: Image.asset("assets/home/livre_audio.png"),
                     ),
@@ -105,7 +130,7 @@ class _HomeViewState extends State<HomeView> {
                 },
                 child: Card(
                   elevation: 5.0,
-                  child: Image.asset("assets/logo/logo.png",height: 150,),
+                  child: Image.asset("assets/logo/logo.png",height: MediaQuery.of(context).size.height / 5,),
                 ),
               ),
             ],
@@ -114,6 +139,103 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
+
+
+  //fonction get langue
+  langue(){}
+
+  //Alerte langue
+  Widget setupAlertDialogLangue(context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          color: Colors.white,
+          height: 200.0, // Change as per your requirement
+          width: MediaQuery.of(context).size.width / 1.5, // Change as per your requirement
+          child: FutureBuilder(
+              future: langue(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                List snap = snapshot.data;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                //si il ya une eurreur lors du chargement
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Erreur de chargement !"),
+                  );
+                }
+                if(snap.isNotEmpty){
+
+                  return ListView.builder(
+                    itemCount: 5, //snap.length
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Center(
+                        child: SizedBox(
+                          //height: 50.0,
+                          width: 200,
+                          child: Card(
+                            color: Colors.transparent,
+                            elevation: 0,
+                            child: InkWell(
+                              onTap: () async{
+                                if (true) {
+                                  var _parametre = '';//await DB.initTabquery();
+                                  if(_parametre.isEmpty){
+                                    await DB.insert("parametre", {
+                                      "langue": snap[index]['description']
+                                    });
+                                  } else {
+                                    await DB.update("parametre", {
+                                      "langue": snap[index]['description']
+                                    }, '_parametre[0][id]');
+                                  }
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: snap[index]['description'] == "Soussou" ? Image.asset("images/kora.jpg")
+                                  : snap[index]['description'] == "Poular" ? Image.asset("images/poutoro.jpg")
+                                  : snap[index]['description'] == "Malinke" ? Image.asset("images/nimba.jpg")
+                                  : snap[index]['description'] == "Français" ? Image.asset("images/national.png")
+                                  : snap[index]['description'] == "Guerze" ? Image.asset("images/pagne_foret_sacre.jpg")
+                                  : Text('${snap[index]['description']}'),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Column(
+                    children: <Widget>[
+                      Center(
+                        //margin: EdgeInsets.only(left: 50.0, right: 50.0),
+                        child: Card(
+                          child: Text("Langue indisponible !"),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              }
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: FlatButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },child: Text("ANNULER"),),
+        )
+      ],
+    );
+  }
+
+
 
   //Alerte Login
   _showDialogLogin(BuildContext context) {
@@ -381,7 +503,7 @@ class _HomeViewState extends State<HomeView> {
                               decoration: InputDecoration(
                                 icon: Icon(Icons.tablet, color: Colors.blue),
                                 contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                hintText: "Identifiant de la tablette",
+                                hintText: "Identifiant de la Borne",
                                 //border: OutlineInputBorder(borderSide: BorderSide(style: BorderStyle.solid, width: 1.0)),
                               ),
                               validator: (value) {

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart';
@@ -77,6 +79,17 @@ class Synchro {
             db: this.db_name_online));
 
         print("==========================Server to local start=============================================");
+
+        //toast
+        Fluttertoast.showToast(
+            msg: "Synchronisation des donnees", //Présence enregistrée,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
 
         //print("-------------------Users Table-------------------------------");
         /*
@@ -672,9 +685,11 @@ class Synchro {
                     if (response.statusCode == 200) {
                       counting++;
                       await db.rawUpdate(
-                          'UPDATE `audio` SET `contenue_audio`=?,`livre_id`=?,`flagtransmis`=? WHERE `id`=?',
+                          'UPDATE `audio` SET `contenue_audio`=?, `langue_id`=?, `livre_id`=?,`flagtransmis`=? WHERE `id`=?',
                           [
+
                             row['contenue_audio'],
+                            row['langue_id'],
                             row['livre_id'],
                             row['flagtransmis'],
                             row['id']
@@ -707,11 +722,12 @@ class Synchro {
                 //response.statusCode
                 if (response.statusCode == 200) {
                   await db.rawQuery(
-                      'INSERT INTO `audio`(`id`,`contenue_audio`, `livre_id`, `flagtransmis` )'
-                          ' VALUES (?,?,?,?)',
+                      'INSERT INTO `audio`(`id`,`contenue_audio`, `langue_id`, `livre_id`, `flagtransmis` )'
+                          ' VALUES (?,?,?,?,?)',
                       [
                         row['id'],
                         row['contenue_audio'],
+                        row['langue_id'],
                         row['livre_id'],
                         row['flagtransmis']
 

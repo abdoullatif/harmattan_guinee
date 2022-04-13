@@ -158,7 +158,7 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
                 pageSnap: true,
                 defaultPage: currentPage,
                 fitPolicy: FitPolicy.BOTH,
-                //nightMode: light,
+                nightMode: light,
                 preventLinkNavigation:
                 false, // if set to true the link is handled in flutter
                 onRender: (_pages) {
@@ -200,6 +200,7 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
                   : Center(
                 child: Text(errorMessage),
               ),
+              /*
               Positioned(
                 bottom: 10,
                 right: 0,
@@ -215,7 +216,7 @@ class _LectureViewState extends State<LectureView> with WidgetsBindingObserver {
                   },
                   heroTag: null,
                 ),
-              ),
+              ),*/
             ],
           );
 

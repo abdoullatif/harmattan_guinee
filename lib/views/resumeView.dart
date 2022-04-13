@@ -1,12 +1,12 @@
+import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:volume_control/volume_control.dart';
 
 import 'package:Harmattan_guinee/model/audio.dart';
 import 'package:Harmattan_guinee/model/livre.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -51,7 +51,7 @@ class _ResumeViewState extends State<ResumeView> {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.only(left: 30,right: 30, top: 50),
+                padding: EdgeInsets.only(left: 20,right: 20, top: 20),
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -63,6 +63,9 @@ class _ResumeViewState extends State<ResumeView> {
                             child: Image.file(
                               File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[0]['titre']}/${data[0]['couverture_livre']}"),
                             ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 22,
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width / 1.8,
@@ -270,7 +273,7 @@ class _ResumeViewState extends State<ResumeView> {
                                               ),
                                               onPressed: () {
                                                 //Navigator.pushNamed(context, '/lecture');
-                                                _showAudioPlayer(context,data[0]['titre'], AudioExist[0]['contenue_audio']);
+                                                _showAudioPlayer(context,data[0]['titre'], AudioExist[0]['contenue_audio'], data[0]['couverture_livre']);
                                               },
                                               icon: Icon(Icons.volume_mute_rounded, size: 35),
                                               label: Text(
@@ -483,18 +486,36 @@ class _ResumeViewState extends State<ResumeView> {
   }
 
   //AlerteDialog Audio Player
-  _showAudioPlayer(BuildContext context, String folder, String audio) {
+  _showAudioPlayer(BuildContext context, String folder, String audio, String couverture) {
 
     //
+    double _val = 0.5; //
+    Timer timer;
+
+    //init volume_control plugin
+    Future<void> initVolumeState() async {
+      if (!mounted) return;
+
+      //read the current volume
+      _val = await VolumeControl.volume;
+      setState(() {
+      });
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      initVolumeState();
+    }
 
     int maxduration = 100;
     int currentpos = 0;
     String currentpostlabel = "00:00";
-    String audioasset = "assets/audio/red-music.mp3";
+    //String audioasset = "assets/audio/red-music.mp3";
     final audiofile = File('/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/$folder/$audio');
     bool isplaying = false;
     bool audioplayed = false;
-    Uint8List audiobytes; // late
+    //Uint8List audiobytes; // late
 
     AudioPlayer player = AudioPlayer();
 
@@ -504,7 +525,7 @@ class _ResumeViewState extends State<ResumeView> {
 
         return Container(
           child: AlertDialog(
-            title: Text('Lecture'),
+            title: Text('Lecture audio du livre'),
             content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState){
                 //
@@ -556,6 +577,14 @@ class _ResumeViewState extends State<ResumeView> {
                             margin: EdgeInsets.only(top:50),
                             child: Column(
                               children: [
+
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height / 3,
+                                  child: Image.file(File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/$folder/$couverture")),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
 
                                 Container(
                                   child: Text(currentpostlabel, style: TextStyle(fontSize: 25),),
@@ -638,9 +667,37 @@ class _ResumeViewState extends State<ResumeView> {
                                           icon: Icon(Icons.stop),
                                           label:Text("Stop")
                                       ),
+
                                     ],
                                   ),
-                                )
+                                ),
+
+                                SizedBox(
+                                  height: 10,
+                                ),
+
+                                Text(
+                                  "Volume",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                  ),
+                                ),
+
+                                //Volume
+                                Slider(value:_val,min:0,max:1,divisions: 100,onChanged:(val){
+                                  _val = val;
+                                  setState(() {});
+                                  if (timer!=null){
+                                    timer?.cancel();
+                                  }
+
+                                  //use timer for the smoother sliding
+                                  timer = Timer(Duration(milliseconds: 200), (){VolumeControl.setVolume(val);});
+
+                                  print("val:$val");
+                                }),
 
                               ],
                             )
