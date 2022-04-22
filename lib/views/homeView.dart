@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:Harmattan_guinee/databases/sqflite_db.dart';
+import 'package:Harmattan_guinee/utils/parametre.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class HomeView extends StatefulWidget {
   //variable
-  final int nombre;
+  final langue;
 
-  const HomeView(this.nombre, {Key key}) : super(key: key);
+  const HomeView(this.langue, {Key key}) : super(key: key);
 
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -18,6 +19,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
 
+  String langue_id = '';
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +79,11 @@ class _HomeViewState extends State<HomeView> {
                       style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                       ),
-                      onPressed: () {
+                      onPressed: () async{
 
                         //Navigator.pushNamed(context, '/livreAudio');
-                        Navigator.pushNamed(context, '/bibliotequeAudio', arguments: 'Livres audio');
 
-                        /*
-                        showDialog<String>(
+                        langue_id = await showDialog<String>(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
@@ -92,7 +92,7 @@ class _HomeViewState extends State<HomeView> {
                                 child: SizedBox(
                                   //height: 50.0,
                                   child: Text(
-                                    "SELECTIONNER VOTRE LANGUE",
+                                    "CHOISSISSEZ UNE LANGUE",
                                     style: TextStyle(
                                       fontSize: 18.0,
                                       fontWeight: FontWeight.bold,
@@ -103,7 +103,10 @@ class _HomeViewState extends State<HomeView> {
                               content: setupAlertDialogLangue(context),
                             );
                           },
-                        );*/
+                        );
+
+                        if(langue_id != '') Navigator.pushNamed(context, '/bibliotequeAudio', arguments: langue_id);
+                        //else Navigator.pop(context);
 
                       },
                       child: Image.asset("assets/home/livre_audio.png"),
@@ -140,10 +143,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-
-  //fonction get langue
-  langue(){}
-
   //Alerte langue
   Widget setupAlertDialogLangue(context) {
     return Column(
@@ -154,7 +153,7 @@ class _HomeViewState extends State<HomeView> {
           height: 200.0, // Change as per your requirement
           width: MediaQuery.of(context).size.width / 1.5, // Change as per your requirement
           child: FutureBuilder(
-              future: langue(),
+              future: widget.langue,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 List snap = snapshot.data;
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -171,7 +170,7 @@ class _HomeViewState extends State<HomeView> {
                 if(snap.isNotEmpty){
 
                   return ListView.builder(
-                    itemCount: 5, //snap.length
+                    itemCount: snap.length, //snap.length
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return Center(
@@ -180,29 +179,15 @@ class _HomeViewState extends State<HomeView> {
                           width: 200,
                           child: Card(
                             color: Colors.transparent,
-                            elevation: 0,
+                            elevation: 5,
                             child: InkWell(
-                              onTap: () async{
-                                if (true) {
-                                  var _parametre = '';//await DB.initTabquery();
-                                  if(_parametre.isEmpty){
-                                    await DB.insert("parametre", {
-                                      "langue": snap[index]['description']
-                                    });
-                                  } else {
-                                    await DB.update("parametre", {
-                                      "langue": snap[index]['description']
-                                    }, '_parametre[0][id]');
-                                  }
-                                  Navigator.pop(context);
-                                }
+                              onTap: () {
+                                Navigator.of(context).pop(snap[index]['id']);
+                                //
                               },
-                              child: snap[index]['description'] == "Soussou" ? Image.asset("images/kora.jpg")
-                                  : snap[index]['description'] == "Poular" ? Image.asset("images/poutoro.jpg")
-                                  : snap[index]['description'] == "Malinke" ? Image.asset("images/nimba.jpg")
-                                  : snap[index]['description'] == "Français" ? Image.asset("images/national.png")
-                                  : snap[index]['description'] == "Guerze" ? Image.asset("images/pagne_foret_sacre.jpg")
-                                  : Text('${snap[index]['description']}'),
+                              child: Image.file(
+                                File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/langues/${snap[index]['image']}"),
+                              ),
                             ),
                           ),
                         ),
@@ -228,7 +213,7 @@ class _HomeViewState extends State<HomeView> {
           alignment: Alignment.bottomRight,
           child: FlatButton(
             onPressed: (){
-              Navigator.pop(context);
+              Navigator.of(context).pop('');
             },child: Text("ANNULER"),),
         )
       ],

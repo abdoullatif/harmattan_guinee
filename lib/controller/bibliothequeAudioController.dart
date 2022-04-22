@@ -1,6 +1,8 @@
 import 'package:Harmattan_guinee/model/audio.dart';
+import 'package:Harmattan_guinee/model/langue.dart';
 import 'package:Harmattan_guinee/model/livre.dart';
 import 'package:Harmattan_guinee/utils/config.dart';
+import 'package:Harmattan_guinee/utils/parametre.dart';
 import 'package:Harmattan_guinee/views/bibliothequeAudioView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,11 +14,17 @@ class BibliothequeAudioController extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Traitement biblioteque Audio
-    final parametre = ModalRoute.of(context).settings.arguments;
-    var livreAudio = Audio.SelectAudio();
+    final langue_id = ModalRoute.of(context).settings.arguments;
+    //var livreAudio = Audio.SelectAudio();
+    var livreAudio;
+    if(langue_id != '' && langue_id != null) livreAudio = Audio.SelectWhereAudioLangue(langue_id);
+    else livreAudio = Audio.SelectAudioFr();
+    //
+    var langue = Langue.Select();
+
 
     return Scaffold(
-      body: BibliotequeAudioView(livreAudio),
+      body: BibliotequeAudioView(livreAudio,langue),
       floatingActionButton: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

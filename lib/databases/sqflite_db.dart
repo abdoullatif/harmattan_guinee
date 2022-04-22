@@ -93,6 +93,14 @@ class DB{
     livre_id TEXT,
     flagtransmis TEXT)
     ''');
+    //table langue
+    await db.execute('''
+    CREATE TABLE langue(
+    id TEXT PRIMARY KEY,
+    langue TEXT,
+    image TEXT,
+    flagtransmis TEXT)
+    ''');
   }
 
   //Query

@@ -5,6 +5,8 @@ import 'package:path_provider/path_provider.dart';
 class Parametre {
   //attribut
   final statusPermission = 0;
+  //langue
+  static String langue_id = '';
 
   //Methode
   static createFolder()async {
@@ -12,6 +14,7 @@ class Parametre {
     final uploads = "uploads";
     final livres = "livres";
     final theme = "themes";
+    final langues = "langues";
     final utilisateur = "utilisateur";
     //
     final appPath = (await getExternalStorageDirectory()).path;
@@ -19,25 +22,29 @@ class Parametre {
     final uploadsPath = Directory("$appPath/$uploads");
     final livresPath = Directory("$appPath/$uploads/$livres");
     final themePath = Directory("$appPath/$uploads/$theme");
+    final languesPath = Directory("$appPath/$uploads/$langues");
     final utilisateurPath = Directory("$appPath/$uploads/$utilisateur");
     //checking
     if ((await uploadsPath.exists())) {
       // TODO:
       print("folder exist");
       //
-      if((await livresPath.exists()) && (await themePath.exists()) && (await utilisateurPath.exists())) {
+      if((await livresPath.exists()) && (await themePath.exists()) && (await utilisateurPath.exists()) && (await languesPath.exists())) {
         // TODO:
-        print("livre,theme,utilisateur folder exist");
+        print("livre,theme,utilisateur,langue folder exist");
       } else {
         // TODO:
         print("not exist other folder : create");
         var status = await Permission.manageExternalStorage.status;
         if (status.isDenied) {
           //
+          print('Autorisation refuser !');
         } else {
           livresPath.create();
           themePath.create();
           utilisateurPath.create();
+          languesPath.create();
+          print('creer');
         }
 
       }
@@ -56,6 +63,7 @@ class Parametre {
         livresPath.create();
         themePath.create();
         utilisateurPath.create();
+        languesPath.create();
       }
 
     }

@@ -1,3 +1,4 @@
+import 'package:Harmattan_guinee/model/langue.dart';
 import 'package:Harmattan_guinee/utils/config.dart';
 import 'package:Harmattan_guinee/views/homeView.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,11 @@ class HomeController extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Traitement controller homeView
-    int nombre = 20;
+    //int nombre = 20;
+    var langue = Langue.Select();
 
     return Scaffold(
-      body: HomeView(nombre),
+      body: HomeView(langue),
       floatingActionButton: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

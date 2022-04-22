@@ -8,8 +8,8 @@ import 'package:volume_control/volume_control.dart';
 
 
 class BibliotequeAudioView extends StatefulWidget {
-  final livreAudio;
-  const BibliotequeAudioView(this.livreAudio, {Key key}) : super(key: key);
+  final livreAudio,langue;
+  const BibliotequeAudioView(this.livreAudio,this.langue, {Key key}) : super(key: key);
 
   @override
   _BibliotequeAudioViewState createState() => _BibliotequeAudioViewState();
@@ -99,70 +99,78 @@ class _BibliotequeAudioViewState extends State<BibliotequeAudioView> {
                         List<Map<String, dynamic>> data = snapshot.data;
                         int n = data.length;
 
-                        return SizedBox(
+                        return data.isNotEmpty ? SizedBox(
                           height: MediaQuery.of(context).size.height / 1.4,
                           child: ListView.builder(
                             itemCount: n,
                             itemBuilder: (context, index) {
                               return Card(
                                 elevation: 5.0,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 160, // MediaQuery.of(context).size.width / 6
-                                      child: Image.file(
-                                        File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[index]['titre']}/${data[index]['couverture_livre']}"),
-                                        //width: 200,
-                                        height: 200,
-                                      ),
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width / 1.6, // MediaQuery.of(context).size.width / 2
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "${data[index]['titre'].replaceAll('_',' ')}",
-                                            textAlign: TextAlign.left,
-                                            //textDirection: TextDirection.rtl,
-                                            style: Theme.of(context).textTheme.headline6,
-                                          ),
-                                          Text(
-                                            "${data[index]['resume_livre']} ...",
-                                            maxLines: 5,
-                                            textAlign: TextAlign.left,
-                                            textDirection: TextDirection.rtl,
-                                            style: Theme.of(context).textTheme.subtitle2,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width / 8, //MediaQuery.of(context).size.width / 8
-                                      child: ElevatedButton.icon(
-                                        style: ButtonStyle(
-                                          //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-                                        ),
-                                        onPressed: () {
-                                          //Navigator.pushNamed(context, '/lecture');
-                                          _showAudioPlayer(context,data[index]['titre'],data[index]['contenue_audio'], data[index]['couverture_livre']);
-                                        },
-                                        icon: Icon(Icons.volume_mute_rounded, size: 35),
-                                        label: Text(
-                                          'Ecouter',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 21,
-                                          ),
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 30.0,right: 30.0),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 160, // MediaQuery.of(context).size.width / 6
+                                        child: Image.file(
+                                          File("/storage/emulated/0/Android/data/com.tulipindustries.Harmattan_guinee/files/uploads/livres/${data[index]['titre']}/${data[index]['couverture_livre']}"),
+                                          //width: 200,
+                                          height: 200,
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(width: 20,),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width / 1.7, // MediaQuery.of(context).size.width / 2
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "${data[index]['titre'].replaceAll('_',' ')}",
+                                              textAlign: TextAlign.left,
+                                              //textDirection: TextDirection.rtl,
+                                              style: Theme.of(context).textTheme.headline6,
+                                            ),
+                                            Text(
+                                              "${data[index]['resume_livre']} ...",
+                                              maxLines: 5,
+                                              textAlign: TextAlign.left,
+                                              textDirection: TextDirection.rtl,
+                                              style: Theme.of(context).textTheme.subtitle2,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 20,),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width / 8, //MediaQuery.of(context).size.width / 8
+                                        child: ElevatedButton.icon(
+                                          style: ButtonStyle(
+                                            //foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                                          ),
+                                          onPressed: () {
+                                            //Navigator.pushNamed(context, '/lecture');
+                                            _showAudioPlayer(context,data[index]['titre'],data[index]['contenue_audio'], data[index]['couverture_livre']);
+                                          },
+                                          icon: Icon(Icons.volume_mute_rounded, size: 35),
+                                          label: Text(
+                                            'Ecouter',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 21,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
+                          ),
+                        ) : Center(
+                          child: Card(
+                            elevation: 5,
+                            child: Text('Il n\'y a pas de livre audio dans cette langue'),
                           ),
                         );
 

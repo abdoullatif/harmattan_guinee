@@ -135,6 +135,114 @@ class Synchro {
         }
         */
 
+        print("-------------------Langue Table-------------------------------");
+
+        try {
+
+          var get_langue_rows = await conn.query(
+              'SELECT * FROM langue', []);
+
+          counting = 0;
+          for (var row in get_langue_rows) {
+            try{
+
+              var id = row['id'];
+
+              int exiting = Sqflite.firstIntValue(await db.rawQuery(
+                  'SELECT COUNT(*) FROM langue where id=?',
+                  [id]));
+
+              if (exiting != 0) {
+                //update
+                List<Map> langue_update = await db.rawQuery(
+                    'SELECT * FROM langue where id=?',
+                    [id]);
+                var langue_update_time;
+                if (langue_update.length == 0)
+                  langue_update_time = "";
+                else
+                  langue_update_time = langue_update.first['flagtransmis'];
+                if(langue_update_time.toString().compareTo("")!=0) {
+                  if ((langue_update_time)
+                      .toString()
+                      .compareTo(row['flagtransmis']) <
+                      0) {
+                    print("download langue" + row['image']);
+                    var langueImage;
+                    if (row['image'].toString().startsWith("\\"))
+                      langueImage = row['image']
+                          .toString()
+                          .replaceFirst(new RegExp(r'\\'), '');
+                    else
+                      langueImage = row['image'];
+                    //
+                    Response response = await Dio().download(
+                        this.online_link + "/hamattan/public/" + this.onlinePath + "/langues/" + langueImage,
+                        this.localPath + "/langues/" + langueImage);
+                    print("response" + response.statusCode.toString());
+                    if (response.statusCode == 200) {
+                      counting++;
+                      await db.rawUpdate(
+                          'UPDATE `langue` SET `langue`=?, `image`=?,`flagtransmis`=? WHERE `id`=?',
+                          [
+                            row['langue'],
+                            row['image'],
+                            row['flagtransmis'],
+                            row['id']
+                          ]);
+                    }
+                  }
+                }
+              } else {
+
+                //insert
+
+                print("download langue "+row['image']);
+                var langueImage;
+                if (row['image'].toString().startsWith("\\"))
+                  langueImage = row['image']
+                      .toString()
+                      .replaceFirst(new RegExp(r'\\'), '');
+                else
+                  langueImage = row['image'];
+                //
+                Response response = await Dio().download(
+                    this.online_link + "/hamattan/public/" + this.onlinePath + "/langues/" + langueImage,
+                    this.localPath + "/langues/" + langueImage);
+                print("response" + response.statusCode.toString());
+
+                //response.statusCode
+                if (response.statusCode == 200) {
+                  await db.rawQuery(
+                      'INSERT INTO `langue`(`id`,`langue`, `image`, `flagtransmis` )'
+                          ' VALUES (?,?,?,?)',
+                      [
+                        row['id'],
+                        row['langue'],
+                        row['image'],
+                        row['flagtransmis']
+
+                      ]);
+                  counting++;
+                }
+              }
+            }catch(e){
+              print('error langue row '+e.toString());
+            }
+
+          }
+
+          print('langue ${counting}');
+          //end personne
+
+        } catch (e) {
+          print("error from langue table " + e.toString());
+        }
+
+        print("-------------------End Langue Table-------------------------------");
+
+
+
         print("-------------------User Table-------------------------------");
 
         try {
